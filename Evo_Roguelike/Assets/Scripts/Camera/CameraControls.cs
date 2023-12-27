@@ -17,7 +17,7 @@ public class CameraControls : MonoBehaviour
     private float _cameraPanSpeed = 5f;
     [SerializeField, Min(0.001f)]
     private float _zoomSpeed = 0.5f;
-    [SerializeField]
+    [SerializeField, Min(0f)]
     private float _minOrthoSize = 1f;
     [SerializeField, Min(0f)]
     private float _maxOrthoSize = 12f;
