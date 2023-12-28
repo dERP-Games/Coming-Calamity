@@ -94,27 +94,14 @@ public class CameraControls : MonoBehaviour
          * value : Input data of action 
          */
 
-        if (!IsMouseWithinScreen()) return;
+        if (!HelperFunctions.IsMouseWithinScreen()) return;
 
         float axisValue = value.ReadValue<float>();
         axisValue = Mathf.Clamp(axisValue, -1, 1);
 
-        Debug.Log(_camera.orthographicSize);
-
         _camera.orthographicSize = Mathf.Clamp(_camera.orthographicSize + (axisValue * _zoomSpeed), _minOrthoSize, _maxOrthoSize);
     }
 
-    private bool IsMouseWithinScreen()
-    {
-        /*
-         * Checks if mouse is within viewport/screen
-         */
-
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        if(mousePos.x > 0 && mousePos.y > 0 && mousePos.x < Screen.width && mousePos.y < Screen.height) { return true; }
-
-        return false;
-    }
 }
 
 
