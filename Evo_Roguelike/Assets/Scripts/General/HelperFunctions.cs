@@ -11,6 +11,8 @@ public static class HelperFunctions
          * Checks if mouse is within viewport/screen
          */
 
+        if (Mouse.current == null) return false;
+
         Vector2 mousePos = Mouse.current.position.ReadValue();
         if (mousePos.x > 0 && mousePos.y > 0 && mousePos.x < Screen.width && mousePos.y < Screen.height) { return true; }
 

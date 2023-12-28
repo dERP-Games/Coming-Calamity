@@ -56,6 +56,27 @@ public class CameraControls : MonoBehaviour
          */
 
         // Checking if mouse at edges of screen
+        if (Mouse.current != null)
+        {
+            CheckIfMouseCloseToEdge();
+        }
+
+        // Checking for action mappings
+        if (_input.Player.CameraPan.IsPressed())
+        {
+            Vector2 cameraMoveVector = _input.Player.CameraPan.ReadValue<Vector2>();
+            transform.position = new Vector3(transform.position.x + (cameraMoveVector.x * _cameraPanSpeed),
+                                         transform.position.y + (cameraMoveVector.y * _cameraPanSpeed),
+                                         transform.position.z);
+        }
+    }
+
+    private void CheckIfMouseCloseToEdge()
+    {
+        /*
+         * Checks if mouse is close to the edge of the screen
+         */
+
         Vector2 mousePos = Mouse.current.position.ReadValue();
         if (mousePos.x < _distanceFromEdgeToScroll && mousePos.x > 0)
         {
@@ -73,15 +94,6 @@ public class CameraControls : MonoBehaviour
         else if (mousePos.y > Screen.height - _distanceFromEdgeToScroll && mousePos.y < Screen.height)
         {
             transform.position = new Vector3(transform.position.x, transform.position.y + _cameraPanSpeed, transform.position.z);
-        }
-
-        // Checking for action mappings
-        if (_input.Player.CameraPan.IsPressed())
-        {
-            Vector2 cameraMoveVector = _input.Player.CameraPan.ReadValue<Vector2>();
-            transform.position = new Vector3(transform.position.x + (cameraMoveVector.x * _cameraPanSpeed),
-                                         transform.position.y + (cameraMoveVector.y * _cameraPanSpeed),
-                                         transform.position.z);
         }
 
     }
