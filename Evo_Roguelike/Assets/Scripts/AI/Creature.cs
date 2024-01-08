@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Enum used for creature state machine
 public enum CreatureStates
 {
     Wandering,
@@ -10,6 +11,10 @@ public enum CreatureStates
     Death
 }
 
+/* CLASS: Creature
+ * USAGE: Main hub for all creature components and controller for 
+ * creature behavior via its state machine.
+ */
 public class Creature : MonoBehaviour
 {
     // Public fields
@@ -17,8 +22,7 @@ public class Creature : MonoBehaviour
     public bool bIsActive = false;
 
     // Get needed components for handling creature behavior
-    public KinematicMovement movementControls;
-
+    KinematicMovement _MovementControls;
 
     // Start is called before the first frame update
     void Start()
@@ -35,14 +39,22 @@ public class Creature : MonoBehaviour
             CheckStateMachine();
     }
 
-    // Init method
+    /*
+	USAGE: Initialize the object's fields and components
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
     void Init()
     {
         // Init component references
-        movementControls = GetComponent<KinematicMovement>();
+        _MovementControls = GetComponent<KinematicMovement>();
     }
 
-    // Method used for checking state machine
+    /*
+	USAGE: Check the creature's state machine to decide agent's next behavior
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
     void CheckStateMachine()
     {
         // Switch on creature states
@@ -52,20 +64,26 @@ public class Creature : MonoBehaviour
             // Handle wander behavior here
             case CreatureStates.Wandering:
                 // Enable movement
-                movementControls.CanMove = true;
-                movementControls.IsWandering = true;
+                _MovementControls.CanMove = true;
+                _MovementControls.IsWandering = true;
                 break;
 
             // Handle target pursue behavior
             case CreatureStates.MovingTo:
+                // TO-DO
+                // Implement moving to behavior once environmental stimuli are implemented
                 break;
 
             // Handle evasive behavior
             case CreatureStates.Avoiding:
+                // TO-DO
+                // Implement avoiding behavior once environmental stimuli are implemented
                 break;
 
             // Handle creature death
             case CreatureStates.Death:
+                // TO-DO
+                // Implement death once vitals component is implemented
                 break;
         }
     }

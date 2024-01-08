@@ -133,8 +133,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
-  bIsActive: 1
-  movementControls: {fileID: 0}
+  bIsActive: 0
 --- !u!114 &9060641407864113839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,14 +148,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {x: 0, y: 0}
   targetRadius: 0.5
-  wanderDelay: 2
   creatureMask:
     serializedVersion: 2
-    m_Bits: 0
-  maxSpeed: 2
+    m_Bits: 64
+  maxSpeed: 5
   maxForce: 0.03
-  flockSize: 3
-  separationStrength: 2
+  flockSize: 2
+  separationStrength: 3
 --- !u!58 &4728537952423303240
 CircleCollider2D:
   m_ObjectHideFlags: 0

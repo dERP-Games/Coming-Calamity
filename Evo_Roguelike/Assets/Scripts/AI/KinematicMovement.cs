@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* CLASS: KinematicMovement
+ * USAGE: Component used for Creature movement and holds all methods needed for
+ * managing different movement scenarios.
+ */
 public class KinematicMovement : MonoBehaviour
 {
     // Public fields
     public Vector2 targetPosition;
     public float targetRadius;
-    public float wanderDelay = 2.0f;
     public LayerMask creatureMask;
 
     // Maximums
@@ -65,8 +68,7 @@ public class KinematicMovement : MonoBehaviour
             if (IsAtDestination() && _bIsWandering)
             {
                 // Find new position once at destination
-                // but with a delay between wander points
-                Invoke("SetWanderPosition", wanderDelay);
+                SetWanderPosition();
                 return;
             }
 
@@ -76,17 +78,14 @@ public class KinematicMovement : MonoBehaviour
             UpdateVelocity();
             UpdatePosition();
         }
-
-        // Set direction to face
-        if (_CurrentVelocity.x > 0.0f)
-            _SpriteRenderer.flipX = true;
-        else
-            _SpriteRenderer.flipX = false;
-
     }
 
-    // Method for updating the agent position based on the current velocity
-    public void UpdatePosition()
+    /*
+	USAGE: Updates the agent position based on the current velocity
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
+    void UpdatePosition()
     {
         // Calculate moving velocity
         Vector2 finalVelocity = _CurrentVelocity.normalized * maxSpeed;
@@ -95,9 +94,12 @@ public class KinematicMovement : MonoBehaviour
         transform.position += new Vector3(finalVelocity.x, finalVelocity.y, 0.0f) * Time.deltaTime;
     }
 
-    // Method used for updating the current velocity 
-    // to steer towards wander point
-    public void UpdateVelocity()
+    /*
+	USAGE: Updates the agent's velocity to steer towards target position
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
+    void UpdateVelocity()
     {
         // Desired velocity for target position
         Vector2 desiredVelocity = targetPosition - new Vector2(transform.position.x, transform.position.y);
@@ -107,9 +109,13 @@ public class KinematicMovement : MonoBehaviour
         _CurrentVelocity = LimitMagnitude(_CurrentVelocity, maxSpeed);
     }
 
-    // Method for returning a steering velocity
-    // to reach a desired velocity
-    public Vector2 Steer(Vector2 desired)
+    /*
+	USAGE: Returns a steering velocity calculated to reach desired velocity
+	ARGUMENTS:
+    -	Vector2 desired -> desired velocity
+	OUTPUT: Vector2, Steering velocity to get closer to desired velocity
+	*/
+    Vector2 Steer(Vector2 desired)
     {
         Vector2 steer = desired - _CurrentVelocity;
         steer = LimitMagnitude(steer, maxForce);
@@ -117,14 +123,23 @@ public class KinematicMovement : MonoBehaviour
         return steer;
     }
 
-    // Method for setting the target position
+    /*
+	USAGE: Sets the agent's target position
+	ARGUMENTS:
+    -	Vector2 newTarget -> new target location
+	OUTPUT: ---
+	*/
     public void SetTargetPosition(Vector2 newTarget)
     {
         // Set the position
         targetPosition = newTarget;
     }
 
-    // Method used for Wandering
+    /*
+	USAGE: Sets target position to random location on the screen, used for free wandering
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
     public void SetWanderPosition()
     {
         // Get max heigh and width values from screen
@@ -139,7 +154,11 @@ public class KinematicMovement : MonoBehaviour
         SetTargetPosition(new Vector2(newPosX, newPosY));
     }
 
-    // Method for checking if target has arrived at destination
+    /*
+	USAGE: Checks whether or not agent has reached their destination
+	ARGUMENTS: ---
+	OUTPUT: boolean, whether or not they made it
+	*/
     public bool IsAtDestination()
     {
         // Get the direction towards target position
@@ -150,16 +169,25 @@ public class KinematicMovement : MonoBehaviour
         return distance <= targetRadius;
     }
 
-    // Method for applying flocking
-    public void ApplySeparation()
+    /*
+	USAGE: Applies velocity calculated from separation algorithm to agent's current velocity
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
+    void ApplySeparation()
     {
         // Get all nearby neighbors and apply separation algorithm to velocity
         Collider2D[] nearbyCreatures = Physics2D.OverlapCircleAll(new Vector2(gameObject.transform.position.x, gameObject.transform.position.y), flockSize, creatureMask);
         _CurrentVelocity += Separate(nearbyCreatures) * separationStrength;
     }
 
-    // Method used for separation
-    public Vector2 Separate(Collider2D[] neighbors)
+    /*
+	USAGE: Calculates velocity needed to separate agent from other nearby agents
+	ARGUMENTS: 
+    -	Collider2D[] neighbors -> array of all nearby agent colliders
+	OUTPUT: Vector2, calculated steering velocity
+	*/
+    Vector2 Separate(Collider2D[] neighbors)
     {
         // Check that neighbors arent empty
         if (neighbors.Length == 0)
@@ -196,8 +224,14 @@ public class KinematicMovement : MonoBehaviour
         return Steer(direction.normalized * maxSpeed);
     }
 
-    // Method used for limiting magnitude of a vector
-    private Vector2 LimitMagnitude(Vector2 baseVector, float maxMagnitude)
+    /*
+	USAGE: Limits magnitude of a given vector
+	ARGUMENTS: 
+    -	Vector2 baseVector -> vector to clamp to the max
+    -	float maxMagnitude -> clamp value of vector magnitude
+	OUTPUT: Vector2, clamped vector
+	*/
+    Vector2 LimitMagnitude(Vector2 baseVector, float maxMagnitude)
     {
         // If magnitude is larger than the max, clamp it to the max
         if (baseVector.sqrMagnitude > maxMagnitude * maxMagnitude)

@@ -223,6 +223,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 505786585194205069, guid: 11fb86e3f1d57994f8ff52c631b881fa, type: 3}
+      propertyPath: bIsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7647991009341768698, guid: 11fb86e3f1d57994f8ff52c631b881fa, type: 3}
       propertyPath: m_Name
       value: Creature (1)
@@ -280,6 +284,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 505786585194205069, guid: 11fb86e3f1d57994f8ff52c631b881fa, type: 3}
+      propertyPath: bIsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7647991009341768698, guid: 11fb86e3f1d57994f8ff52c631b881fa, type: 3}
       propertyPath: m_Name
       value: Creature (2)
@@ -337,6 +345,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 505786585194205069, guid: 11fb86e3f1d57994f8ff52c631b881fa, type: 3}
+      propertyPath: bIsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7647991009341768698, guid: 11fb86e3f1d57994f8ff52c631b881fa, type: 3}
       propertyPath: m_Name
       value: Creature
