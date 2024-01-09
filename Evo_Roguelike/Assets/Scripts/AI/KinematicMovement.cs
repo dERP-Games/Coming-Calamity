@@ -48,6 +48,13 @@ public class KinematicMovement : MonoBehaviour
         set { _bIsWandering = value; }
     }
 
+    public SpriteRenderer SpriteRenderer
+    {
+        // Get/Set object
+        get { return _SpriteRenderer; }
+        set { _SpriteRenderer = value; }
+    }
+
     // Ran at beginning of game
     void Start()
     {
