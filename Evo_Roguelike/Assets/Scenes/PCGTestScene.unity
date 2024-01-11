@@ -156,8 +156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseType: 1
-  maskType: 0
-  faderType: 0
+  maskSetup: {fileID: 11400000, guid: 66163b97d2afa9548bcfcc3ae8dc7a1e, type: 2}
 --- !u!64 &1338304547
 MeshCollider:
   m_ObjectHideFlags: 0

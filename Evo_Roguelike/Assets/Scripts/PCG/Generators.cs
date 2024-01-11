@@ -1,6 +1,7 @@
 // Support Classes and Data Types
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public struct NormalizingValues
 {
@@ -78,7 +79,7 @@ public static class GeneratorFactory
         }
     }
 
-    public static IGeneratorStrategy MakeMaskGenerator(MaskGeneratorType type, IFaderStrategy fader)
+    public static Mask MakeMaskGenerator(MaskGeneratorType type, IFaderStrategy fader)
     {
         // Masks act in combination with the noise generators to give shape to the terrain.
         switch (type)
@@ -251,6 +252,7 @@ public abstract class Mask : IGeneratorStrategy
     // A mask creates an area that allows noise values to pass through.
     // Values that lie outside its region fade out according to the fade strategy of the mask
     protected IFaderStrategy _fader;
+    protected bool isNegative;
     public Mask(IFaderStrategy fader)
     {
         _fader = fader;
@@ -262,6 +264,8 @@ public abstract class Mask : IGeneratorStrategy
     }
 
     public abstract float GeneratePixelValue(int x, int y);
+
+    public virtual void ConfigureMask(MaskConfig config) { }
 }
 
 public class NoMask : Mask
@@ -277,50 +281,72 @@ public class NoMask : Mask
 
 public class RadialMask : Mask
 {
+    float _radius;
+    Vector2 _center;
     // A circular mask
     public RadialMask(IFaderStrategy fader) : base(fader){}
 
     public override float GeneratePixelValue(int x, int y)
     {
-        float _radius = PCGConfig.radialMaskRadius;
-        Vector2 _center = PCGConfig.radialMaskCenter;
         // Distance is calculated as a factor of the radius
         Vector2 coordinates = new Vector2(x, y);
         float distance = Vector2.Distance(coordinates, _center);
         float radius_proportional_distance = (distance / _radius) - 1.0f;
-        return _fader.Fade(radius_proportional_distance);
+        float output = _fader.Fade(radius_proportional_distance);
+        
+        //Evaluate if this is subtractive or additive
+        output = isNegative ? -1 * output : output;
+        return output;
+    }
+
+    public override void ConfigureMask(MaskConfig config)
+    {
+        _radius = config.sizeVariable1;
+        _center = config.center;
+        isNegative = config.isNegative;
     }
 }
 
 public class Generator
 {
     public IGeneratorStrategy noiseGenerationStrategy;
-    IGeneratorStrategy mask;
+    Mask[] masks;
     public float[,] noiseMap = new float[0,0];
 
-
-    
-    
-    public Generator( NoiseGeneratorType noiseType, MaskGeneratorType maskType, FaderType faderType)
+    public Generator( NoiseGeneratorType noiseType, MaskSetup maskSetup)
     {
         noiseGenerationStrategy = GeneratorFactory.MakeNoiseGenerator(noiseType);
-        IFaderStrategy fader = FaderFactory.MakeFader(faderType);
-        mask = GeneratorFactory.MakeMaskGenerator(maskType, fader);
+        masks = new Mask[maskSetup.maskConfig.Length];
+        for (int i = 0; i < maskSetup.maskConfig.Length; i++)
+        {
+            MaskConfig config = maskSetup.maskConfig[i];
+            IFaderStrategy fader = FaderFactory.MakeFader(config.faderType);
+            masks[i] = GeneratorFactory.MakeMaskGenerator(config.maskType, fader);
+            masks[i].ConfigureMask(config);
+        }
+        
     }
 
     // Additional constructor using all default types. Likely won't be used in production but useful for testing
     public Generator()
     {
         noiseGenerationStrategy = GeneratorFactory.MakeNoiseGenerator(NoiseGeneratorType.Default);
+        masks = new Mask[1];
         IFaderStrategy fader = FaderFactory.MakeFader(FaderType.Default);
-        mask = GeneratorFactory.MakeMaskGenerator(MaskGeneratorType.Default, fader);
+        masks[0] = GeneratorFactory.MakeMaskGenerator(MaskGeneratorType.Default, fader);
     }
 
     // Additional constructor to allow for custom setting of noise generators (mostly for debugging purposes)
-    public Generator(MaskGeneratorType maskType, FaderType faderType)
+    public Generator(MaskSetup maskSetup)
     {
-        IFaderStrategy fader = FaderFactory.MakeFader(faderType);
-        mask = GeneratorFactory.MakeMaskGenerator(maskType, fader);
+        masks = new Mask[maskSetup.maskConfig.Length];
+        for (int i = 0; i < maskSetup.maskConfig.Length; i++)
+        {
+            MaskConfig config = maskSetup.maskConfig[i];
+            IFaderStrategy fader = FaderFactory.MakeFader(config.faderType);
+            masks[i] = GeneratorFactory.MakeMaskGenerator(config.maskType, fader);
+            masks[i].ConfigureMask(config);
+        }
     }
 
     public void SetNoiseGenerator(IGeneratorStrategy gs)
@@ -389,11 +415,23 @@ public class Generator
             for (int j = 0; j < width; j++)
             {
                 container[j, i] = Mathf.InverseLerp(norm.min, norm.max, container[j, i]);
-                container[j, i] *= mask.GeneratePixelValue(j, i);
+                container[j, i] *= MaskEvaluation(j, i);
             }
         }
 
         //Cache the created noiseMap
         noiseMap = container;
+    }
+
+    private float MaskEvaluation(int x, int y)
+    {
+        // Consolidate the output of all masks at this location, total output should be between [-1,1]
+        float summedMaskOutput = 0f;
+        for (int m = 0; m < masks.Length; m++)
+        {
+            summedMaskOutput += masks[m].GeneratePixelValue(x, y);
+        }
+        summedMaskOutput = Mathf.Clamp(summedMaskOutput, -1, 1);
+        return summedMaskOutput;
     }
 }

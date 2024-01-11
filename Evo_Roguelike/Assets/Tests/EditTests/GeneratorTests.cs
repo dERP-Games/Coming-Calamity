@@ -7,6 +7,57 @@ using UnityEngine.TestTools;
 
 public class ProceduralGenerationTests
 {
+    #region Fixtures
+    public MaskConfig[] SingleRadialMaskConfig()
+    {
+        MaskConfig[] mask = new MaskConfig[]
+        {
+            new MaskConfig()
+        };
+        mask[0].center = new Vector2(360, 360);
+        mask[0].sizeVariable1 = 200.0f;
+        mask[0].isNegative = false;
+        return mask;
+    }
+
+    public MaskConfig[] MultiRadialMasksAllPositive()
+    {
+        MaskConfig[] mask = new MaskConfig[]
+        {
+            new MaskConfig(),
+            new MaskConfig()
+        };
+        //Mask 1
+        mask[0].center = new Vector2(180, 180);
+        mask[0].sizeVariable1 = 75f;
+        mask[0].isNegative = false;
+
+        // Mask 2
+        mask[1].center = new Vector2(360, 360);
+        mask[1].sizeVariable1 = 70f;
+        mask[1].isNegative = false;
+        return mask;
+    }
+
+    public MaskConfig[] MultiRadialMasksMixedSign()
+    {
+        MaskConfig[] mask = new MaskConfig[]
+        {
+            new MaskConfig(),
+            new MaskConfig()
+        };
+        //Mask 1
+        mask[0].center = new Vector2(180, 180);
+        mask[0].sizeVariable1 = 75f;
+        mask[0].isNegative = true;
+
+        // Mask 2
+        mask[1].center = new Vector2(360, 360);
+        mask[1].sizeVariable1 = 70f;
+        mask[1].isNegative = false;
+        return mask;
+    }
+    #endregion
     #region Fader Tests
     [Test]
     public void TestFadeFactory()
@@ -123,11 +174,11 @@ public class ProceduralGenerationTests
         IFaderStrategy noFade = FaderFactory.MakeFader(FaderType.Default);
         IFaderStrategy linearFade = FaderFactory.MakeFader(FaderType.Linear);
         IFaderStrategy hbFader = FaderFactory.MakeFader(FaderType.Hyperbolic);
-        IGeneratorStrategy pureMask = GeneratorFactory
+        Mask pureMask = GeneratorFactory
             .MakeMaskGenerator(MaskGeneratorType.Default, noFade);
-        IGeneratorStrategy linearMask = GeneratorFactory
+        Mask linearMask = GeneratorFactory
             .MakeMaskGenerator(MaskGeneratorType.Default, linearFade);
-        IGeneratorStrategy hbMask = GeneratorFactory
+        Mask hbMask = GeneratorFactory
             .MakeMaskGenerator(MaskGeneratorType.Default, hbFader);
 
         //Arrange test cases
@@ -176,30 +227,34 @@ public class ProceduralGenerationTests
     }
 
     [Test]
-    public void TestRadialMask()
+    public void TestSingleRadialMask()
     {
+        MaskConfig[] maskConfig = SingleRadialMaskConfig();
         // Arrange masks
         IFaderStrategy noFade = FaderFactory.MakeFader(FaderType.Default);
         IFaderStrategy linearFade = FaderFactory.MakeFader(FaderType.Linear);
         IFaderStrategy hbFader = FaderFactory.MakeFader(FaderType.Hyperbolic);
-        IGeneratorStrategy pureMask = GeneratorFactory
+        Mask pureMask = GeneratorFactory
             .MakeMaskGenerator(MaskGeneratorType.Radial, noFade);
-        IGeneratorStrategy linearMask = GeneratorFactory
+        pureMask.ConfigureMask(maskConfig[0]);
+        Mask linearMask = GeneratorFactory
             .MakeMaskGenerator(MaskGeneratorType.Radial, linearFade);
-        IGeneratorStrategy hbMask = GeneratorFactory
+        linearMask.ConfigureMask(maskConfig[0]);
+        Mask hbMask = GeneratorFactory
             .MakeMaskGenerator(MaskGeneratorType.Radial, hbFader);
+        hbMask.ConfigureMask(maskConfig[0]);
 
         //Arrange test cases
 
         //Half a radius away
         Vector2 withinMaskPosition = new Vector2(
-            PCGConfig.radialMaskCenter.x - PCGConfig.radialMaskRadius * 0.5f,
-            PCGConfig.radialMaskCenter.y);
+            maskConfig[0].center.x - maskConfig[0].sizeVariable1 * 0.5f,
+            maskConfig[0].center.y);
 
         //1.3 radii away
         Vector2 outsideMaskPosition = new Vector2(
-            PCGConfig.radialMaskCenter.x - PCGConfig.radialMaskRadius * 1.3f,
-            PCGConfig.radialMaskCenter.y);
+            maskConfig[0].center.x - maskConfig[0].sizeVariable1 * 1.3f,
+            maskConfig[0].center.y);
 
         // Arrange expected values
         float expectedOutputWithin = 1.0f;
@@ -244,6 +299,107 @@ public class ProceduralGenerationTests
         Assert.AreEqual(expectedLinearMaskOutputOutside, linearMaskOutputOutside);
         Assert.AreEqual(expectedHyperbolicOutputOutside, hbMaskOutputOutside);
         Assert.Greater(hbMaskOutputOutside, expectedHyperbolicThreshold);
+    }
+
+    [Test]
+    public void TestOverlappingPositiveMasks()
+    {
+        MaskConfig[] configs = MultiRadialMasksAllPositive();
+        
+        // We use a linear fader. Other fading strategies and masks have been tested before.
+        IFaderStrategy fader = FaderFactory.MakeFader(FaderType.Linear);
+        Mask mask1 = GeneratorFactory.MakeMaskGenerator(MaskGeneratorType.Radial, fader);
+        mask1.ConfigureMask(configs[0]);
+        Mask mask2 = GeneratorFactory.MakeMaskGenerator(MaskGeneratorType.Radial, fader);
+        mask2.ConfigureMask(configs[1]);
+
+        // Expected values
+        float expectedWithinOutput = 1.0f;
+        float expectedOutsideOutput = 0.0f;
+
+
+        // Test positions: Inside both masks, outside both masks and within fading range of both masks
+        Vector2 withinMask1 = new Vector2(configs[0].center.x - configs[0].sizeVariable1 * 0.5f, configs[0].center.y);
+        Vector2 withinMask2 = new Vector2(configs[1].center.x - configs[1].sizeVariable1 * 0.5f, configs[1].center.y);
+        Vector2 outsideMasks = new Vector2(720f, 720f);
+        Vector2 intersectionPoint = new Vector2(
+            0.5f * (configs[0].center.x + configs[1].center.x),
+            0.5f * (configs[0].center.y + configs[1].center.y)
+            );
+
+        float combinedMaskOutputWithinMask1 = mask1.GeneratePixelValue((int) withinMask1.x, (int) withinMask1.y) + 
+            mask2.GeneratePixelValue((int) withinMask1.x, (int) withinMask1.y);
+
+        float combinedMaskOutputWithinMask2 = mask2.GeneratePixelValue((int) withinMask2.x, (int) withinMask2.y) +
+            mask1.GeneratePixelValue((int) withinMask2.x, (int) withinMask2.y);
+        float combinedMaskOutputOutsideMasks = mask2.GeneratePixelValue((int)outsideMasks.x, (int)outsideMasks.y) +
+            mask1.GeneratePixelValue((int)outsideMasks.x, (int)outsideMasks.y);
+
+        float mask1OutputIntersectionPoint = mask1.GeneratePixelValue((int) intersectionPoint.x, (int) intersectionPoint.y);
+        float mask2OutputIntersectionPoint = mask2.GeneratePixelValue((int) intersectionPoint.x, (int) intersectionPoint.y);
+        float combinedOutputIntersectionPoint = mask1OutputIntersectionPoint + mask2OutputIntersectionPoint;
+
+        //Assert
+        Assert.AreEqual(expectedWithinOutput, combinedMaskOutputWithinMask1);
+        Assert.AreEqual(expectedWithinOutput, combinedMaskOutputWithinMask2);
+        Assert.AreEqual(expectedOutsideOutput, combinedMaskOutputOutsideMasks);
+        
+        Assert.Less(mask1OutputIntersectionPoint, 1f);
+        Assert.Less(mask2OutputIntersectionPoint, 1f);
+        Assert.Greater(combinedOutputIntersectionPoint, mask1OutputIntersectionPoint);
+        Assert.Greater(combinedOutputIntersectionPoint, mask2OutputIntersectionPoint);
+
+
+    }
+
+    [Test]
+    public void TestOverlappingNegativeMasks()
+    {
+        MaskConfig[] configs = MultiRadialMasksMixedSign();
+
+        // We use a linear fader. Other fading strategies and masks have been tested before.
+        IFaderStrategy fader = FaderFactory.MakeFader(FaderType.Linear);
+        Mask mask1 = GeneratorFactory.MakeMaskGenerator(MaskGeneratorType.Radial, fader);
+        mask1.ConfigureMask(configs[0]);
+        Mask mask2 = GeneratorFactory.MakeMaskGenerator(MaskGeneratorType.Radial, fader);
+        mask2.ConfigureMask(configs[1]);
+
+        // Expected values
+        float expectedWithinPositiveOutput = 1.0f;
+        float expectedWithinNegativeOutput = -1.0f;
+        float expectedOutsideOutput = 0.0f;
+
+
+        // Test positions: Inside both masks, outside both masks and within fading range of both masks
+        Vector2 withinMask1 = new Vector2(configs[0].center.x - configs[0].sizeVariable1 * 0.5f, configs[0].center.y);
+        Vector2 withinMask2 = new Vector2(configs[1].center.x - configs[1].sizeVariable1 * 0.5f, configs[1].center.y);
+        Vector2 outsideMasks = new Vector2(720f, 720f);
+        Vector2 intersectionPoint = new Vector2(
+            0.5f * (configs[0].center.x + configs[1].center.x),
+            0.5f * (configs[0].center.y + configs[1].center.y)
+            );
+
+        float combinedMaskOutputWithinMask1 = mask1.GeneratePixelValue((int)withinMask1.x, (int)withinMask1.y) +
+            mask2.GeneratePixelValue((int)withinMask1.x, (int)withinMask1.y);
+
+        float combinedMaskOutputWithinMask2 = mask2.GeneratePixelValue((int)withinMask2.x, (int)withinMask2.y) +
+            mask1.GeneratePixelValue((int)withinMask2.x, (int)withinMask2.y);
+        float combinedMaskOutputOutsideMasks = mask2.GeneratePixelValue((int)outsideMasks.x, (int)outsideMasks.y) +
+            mask1.GeneratePixelValue((int)outsideMasks.x, (int)outsideMasks.y);
+
+        float mask1OutputIntersectionPoint = mask1.GeneratePixelValue((int)intersectionPoint.x, (int)intersectionPoint.y);
+        float mask2OutputIntersectionPoint = mask2.GeneratePixelValue((int)intersectionPoint.x, (int)intersectionPoint.y);
+        float combinedOutputIntersectionPoint = mask1OutputIntersectionPoint + mask2OutputIntersectionPoint;
+
+        //Assert
+        Assert.AreEqual(expectedWithinNegativeOutput, combinedMaskOutputWithinMask1);
+        Assert.AreEqual(expectedWithinPositiveOutput, combinedMaskOutputWithinMask2);
+        Assert.AreEqual(expectedOutsideOutput, combinedMaskOutputOutsideMasks);
+
+        Assert.Less(mask1OutputIntersectionPoint, 0f);
+        Assert.Less(mask2OutputIntersectionPoint, 1f);
+        Assert.Greater(combinedOutputIntersectionPoint, mask1OutputIntersectionPoint);
+        Assert.Less(combinedOutputIntersectionPoint, mask2OutputIntersectionPoint);
 
 
     }
@@ -261,7 +417,7 @@ public class ProceduralGenerationTests
     [Test]
     public void TestPerlinNoiseSmoothness()
     {
-        Generator generator = new Generator(MaskGeneratorType.Default, FaderType.Default);
+        Generator generator = new Generator();
         //We create the perlin generator separately as this is a randomness test and randomness doesn't always behave
         PerlinNoiseGenerator perlinNoiseGenerator = new PerlinNoiseGenerator();
         perlinNoiseGenerator.SetSeed(new Vector2(10f, 10f));
@@ -299,7 +455,7 @@ public class ProceduralGenerationTests
         //We create the perlin generator separately as this is a randomness test and randomness doesn't always behave
         PerlinNoiseGenerator perlinNoiseGenerator = new PerlinNoiseGenerator();
         perlinNoiseGenerator.SetSeed(new Vector2(10f, 10f));
-        Generator generator = new Generator(MaskGeneratorType.Default, FaderType.Default);
+        Generator generator = new Generator();
         generator.SetNoiseGenerator(perlinNoiseGenerator);
 
         // Big old dataset (1600 entries)
@@ -338,7 +494,8 @@ public class ProceduralGenerationTests
     [Test]
     public void TestNoiseValueConstraints()
     {
-        Generator perlinGenerator = new Generator(NoiseGeneratorType.Perlin, MaskGeneratorType.Default, FaderType.Default);
+        Generator perlinGenerator = new Generator();
+        perlinGenerator.SetNoiseGenerator(GeneratorFactory.MakeNoiseGenerator(NoiseGeneratorType.Perlin));
         Generator randomGenerator = new Generator();
         Vector2 testDimensions = new Vector2(40, 40);
 

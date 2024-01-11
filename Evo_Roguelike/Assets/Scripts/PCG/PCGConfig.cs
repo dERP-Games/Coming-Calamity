@@ -2,8 +2,6 @@ using UnityEngine;
 
 public static class PCGConfig
 {
-    public static Vector2 radialMaskCenter = new Vector2(360, 360);
-    public static float radialMaskRadius = 200.0f;
 
     public static int octaves = 4;
     public static float amplitude_factor = 0.5f;

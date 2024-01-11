@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: TestMaskSetup
+  m_EditorClassIdentifier: Main::MaskSetup
+  maskConfig:
+  - isNegative: 0
+    maskType: 1
+    faderType: 2
+    center: {x: 360, y: 360}
+    sizeVariable1: 200
+    sizeVariable2: 0
+  - isNegative: 1
+    maskType: 1
+    faderType: 1
+    center: {x: 420, y: 210}
+    sizeVariable1: 40
+    sizeVariable2: 0
+  - isNegative: 1
+    maskType: 1
+    faderType: 1
+    center: {x: 600, y: 650}
+    sizeVariable1: 83
+    sizeVariable2: 0
+  - isNegative: 0
+    maskType: 1
+    faderType: 2
+    center: {x: 550, y: 550}
+    sizeVariable1: 43
+    sizeVariable2: 0

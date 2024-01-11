@@ -8,8 +8,7 @@ public class TerrainGenerationManager : MonoBehaviour
     // It is _not_ intended to be used in production. It is used for visualization testing of the noise generators
 
     public NoiseGeneratorType noiseType;
-    public MaskGeneratorType maskType;
-    public FaderType faderType;
+    public MaskSetup maskSetup;
 
     public Generator noiseGenerator;
 
@@ -24,7 +23,7 @@ public class TerrainGenerationManager : MonoBehaviour
         rend = GetComponent<Renderer>();
         rend.material.mainTexture = noiseTex;
 
-        noiseGenerator = new Generator(noiseType, maskType, faderType);
+        noiseGenerator = new Generator(noiseType, maskSetup);
         float[,] noiseValues = noiseGenerator.GenerateNoiseArray(width, height);
 
         for (int i = 0; i < height; i++)
