@@ -2,15 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Enum used for creature state machine
-public enum CreatureStates
-{
-    Wandering,
-    MovingTo,
-    Avoiding,
-    Death
-}
-
 /* CLASS: Creature
  * USAGE: Main hub for all creature components and controller for 
  * creature behavior via its state machine.
@@ -18,11 +9,16 @@ public enum CreatureStates
 public class Creature : MonoBehaviour
 {
     // Public fields
-    public CreatureStates currentState = CreatureStates.Wandering;
     public bool bIsActive = false;
 
-    // Get needed components for handling creature behavior
-    KinematicMovement _MovementControls;
+    // Get reference to creature's state machine
+    CreatureStateMachine _StateMachine;
+
+    public CreatureStateMachine StateMachine
+    {
+        // Get state machine
+        get { return _StateMachine; }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -34,9 +30,8 @@ public class Creature : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Check behavior when active
-        if (bIsActive)
-            CheckStateMachine();
+        // Feed state machine whether creature is active
+        _StateMachine.bIsActive = bIsActive;
     }
 
     /*
@@ -47,44 +42,6 @@ public class Creature : MonoBehaviour
     void Init()
     {
         // Init component references
-        _MovementControls = GetComponent<KinematicMovement>();
-    }
-
-    /*
-	USAGE: Check the creature's state machine to decide agent's next behavior
-	ARGUMENTS: ---
-	OUTPUT: ---
-	*/
-    void CheckStateMachine()
-    {
-        // Switch on creature states
-        // to control decision making
-        switch (currentState)
-        {
-            // Handle wander behavior here
-            case CreatureStates.Wandering:
-                // Enable movement
-                _MovementControls.CanMove = true;
-                _MovementControls.IsWandering = true;
-                break;
-
-            // Handle target pursue behavior
-            case CreatureStates.MovingTo:
-                // TO-DO
-                // Implement moving to behavior once environmental stimuli are implemented
-                break;
-
-            // Handle evasive behavior
-            case CreatureStates.Avoiding:
-                // TO-DO
-                // Implement avoiding behavior once environmental stimuli are implemented
-                break;
-
-            // Handle creature death
-            case CreatureStates.Death:
-                // TO-DO
-                // Implement death once vitals component is implemented
-                break;
-        }
+        _StateMachine = GetComponent<CreatureStateMachine>();
     }
 }
