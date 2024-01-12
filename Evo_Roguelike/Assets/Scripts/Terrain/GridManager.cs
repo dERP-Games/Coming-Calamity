@@ -54,6 +54,9 @@ public class GridManager : MonoBehaviour
 
     public void GenerateTileData()
     {
+        /*
+         * Calls for PCG terrain generation, translates into tile types, and sends data to be contstructed into tilemap.
+         */
         Generator noiseGenerator = new Generator(noiseType, maskType, faderType);
         float[,] noiseValues = noiseGenerator.GenerateNoiseArray(terrainWidth, terrainHeight);
         GenerateGroundTilesEditor(_noiseQuantizer.GroundTilesFromNoise(noiseValues));

@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Specifies what threshold of values gets translated to which tile type.
+ */
 [Serializable]
 public class GroundTileThreshold
 {
@@ -12,12 +15,22 @@ public class GroundTileThreshold
     public bool bMaxInclusive = false;
 }
 
+/*
+ * Translates noise values into ground tiles using a list of GroudnTileThresholds
+ */
 [CreateAssetMenu(menuName = "ScriptableObjects/NoiseQuantizer")]
 public class NoiseQuantizer : ScriptableObject
 {
     public List<GroundTileThreshold> thresholds;
 
 
+    /*
+     * Converts 2D noise data into GroundTileTypes based on the thresholds specificed.
+     * Input
+     * tileData : 2D array of noise data representing terrain data.
+     * Output
+     * 2D array of GroundTileTypes representing the tiles in the tilemap.
+     */
     public GroundTile.GroundTileType[,] GroundTilesFromNoise(float[,] tileData)
     {
         GroundTile.GroundTileType[,] groundTiles = new GroundTile.GroundTileType [tileData.GetLength(0), tileData.GetLength(1)];
@@ -32,7 +45,14 @@ public class NoiseQuantizer : ScriptableObject
 
         return groundTiles;
     }
-    
+
+    /*
+     * Converts a single noise value to a GroundTileType
+     * Input
+     * noiseVal : Singular noise value representing a single tile
+     * Output
+     * A singular GroundTileType
+     */
     private GroundTile.GroundTileType GetTileType(float noiseVal)
     {
         foreach(GroundTileThreshold thresh in thresholds)
