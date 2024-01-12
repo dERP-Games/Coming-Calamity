@@ -17,8 +17,20 @@ public class CreatureStateMachine : AbsStateMachine<CreatureStateMachine.Creatur
         Death
     }
 
+    // Get needed components for state machine
+    KinematicMovement _MovementControls;
+
+    // Public properties for creature components
+    public KinematicMovement MovementControls
+    {
+        get { return _MovementControls; }
+    }
+
     void Awake()
     {
+        // Initialize all components
+        Init();
+
         // Fill the dictionary with needed states
         states[CreatureStates.Wandering] = new WanderingState();
 
@@ -27,5 +39,15 @@ public class CreatureStateMachine : AbsStateMachine<CreatureStateMachine.Creatur
 
         // Default state will be wandering
         currentState = states[CreatureStates.Wandering];
+    }
+
+    /*
+	USAGE: Initialize the state machine's fields and components
+	ARGUMENTS: ---
+	OUTPUT: ---
+	*/
+    void Init()
+    {
+        _MovementControls = GetComponent<KinematicMovement>();
     }
 }

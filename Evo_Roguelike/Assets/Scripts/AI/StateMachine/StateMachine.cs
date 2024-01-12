@@ -22,12 +22,11 @@ public abstract class AbsStateMachine<EState> : MonoBehaviour where EState : Sys
         // Iterate through each state to pass game object as owner reference
         foreach (KeyValuePair<EState, AbsBaseState<EState>> state in states)
         {
-            state.Value.Owner = gameObject;
+            state.Value.OwnerFSM = this;
         }
 
         // Enter the first state
         currentState.EnterState();
-
     }
 
     // Update is called once every frame

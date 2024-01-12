@@ -19,7 +19,7 @@ public abstract class AbsBaseState<EState> where EState : System.Enum
     }
 
     // Public properties
-    public GameObject Owner { get; set; }
+    public AbsStateMachine<EState> OwnerFSM { get; set; }
     public EState StateKey { get; private set; }
 
     // Methods needed for state implementation

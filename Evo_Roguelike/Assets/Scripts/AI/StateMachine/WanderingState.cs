@@ -18,7 +18,8 @@ public class WanderingState : AbsBaseState<CreatureStateMachine.CreatureStates>
 	*/
     public override void EnterState()
     {
-        _MovementControls = Owner.GetComponent<KinematicMovement>();
+        CreatureStateMachine FSM = (CreatureStateMachine)OwnerFSM;
+        _MovementControls = FSM.MovementControls;
     }
 
     /*
