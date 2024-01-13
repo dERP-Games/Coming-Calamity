@@ -44,6 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e8e924a4699354fa2e6bb8d1cf2ab2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  noiseType: 1
+  maskType: 1
+  faderType: 1
+  terrainWidth: 50
+  terrainHeight: 50
   _groundTilemap: {fileID: 0}
   _groundTiles:
   - {fileID: 11400000, guid: 4ae13eb46f91a4449aac1b6e9b4dfd4f, type: 2}
@@ -54,3 +59,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b9e8d67f72794a34fa447a7ddfaa62f0, type: 2}
   - {fileID: 11400000, guid: c7cef9a9371d70542b2155de41e75478, type: 2}
   - {fileID: 11400000, guid: 39b8e7e6f4ad40e4f8d7da8cf5533f3f, type: 2}
+  - {fileID: 11400000, guid: da775aadf74c2df47b5544e83e64e10f, type: 2}
+  _noiseQuantizer: {fileID: 11400000, guid: 9273cb97a6b44ec49a7a15f6387fbcca, type: 2}

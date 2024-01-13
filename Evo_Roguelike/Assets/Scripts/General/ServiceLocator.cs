@@ -24,6 +24,7 @@ public class ServiceLocator : MonoBehaviour
         servicesDict = new Dictionary<Type, MonoBehaviour>();
     }
 
+
     /*
      * A templated function that gets a Monobehavior service that is a children of this game object.
      * Output
