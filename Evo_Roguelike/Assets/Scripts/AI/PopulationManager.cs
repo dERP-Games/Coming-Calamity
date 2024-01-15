@@ -86,7 +86,7 @@ public class PopulationManager : MonoBehaviour
 
         // Update on-screen status
         creature.bIsActive = true;
-        creature.currentState = CreatureStates.Wandering;
+        creature.StateMachine.TransitionToState(CreatureStateMachine.CreatureStates.Wandering);
     }
 
     /*

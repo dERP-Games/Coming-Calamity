@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 9060641407864113839}
   - component: {fileID: 4728537952423303240}
   - component: {fileID: 1569197706911231457}
+  - component: {fileID: 5213382367055283233}
   m_Layer: 6
   m_Name: Circle
   m_TagString: Untagged
@@ -132,7 +133,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 772a7d4dadb44cd4aa8881a4e4efcb39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentState: 0
   bIsActive: 0
 --- !u!114 &9060641407864113839
 MonoBehaviour:
@@ -217,3 +217,16 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &5213382367055283233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8100403294380943795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22658d82f753ded4ca506d4e8eef4ec1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsActive: 1
