@@ -14,6 +14,10 @@ public struct MaskConfig
     [Tooltip("Type of fader to use")]
     public FaderType faderType;
 
+    [Tooltip("Gradient for linear faders")]
+    [Range(0.1f, 2.0f)]
+    public float faderGradient;
+
     [Tooltip("Determines the center of the mask")]
     public Vector2 center;
 

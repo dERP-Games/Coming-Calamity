@@ -102,7 +102,7 @@ public class ProceduralGenerationTests
 
         float expectedHigh = 1.0f;
         float expectedLow = 0.0f;
-        float expectedMidpoint = positiveTestValue * PCGConfig.fadeGradient;
+        float expectedMidpoint = positiveTestValue;
         float lowGradient = fader.Fade(0.3f) - fader.Fade(0.2f);
         float highGradient = fader.Fade(0.8f) - fader.Fade(0.7f);
 
@@ -130,7 +130,7 @@ public class ProceduralGenerationTests
         float positiveTestValue = 0.6f;
         float largePositiveTestvalue = 5.5f;
 
-        float expectedHigh = 1.0f;
+        float expectedHigh = 0.975f;
         float expectedLow = 0.0f;
         float expectedLowPositive = 0.5f * MathF.Tanh(4 * (1-lowPositiveTestValue) - 2) + 0.5f;
         float expectedHighPositive = 0.5f * MathF.Tanh(4 * (1-positiveTestValue) - 2) + 0.5f;
@@ -139,8 +139,8 @@ public class ProceduralGenerationTests
 
         //Negative values means that the test point is within the mask.
         //No diminishing of the signal should happen
-        Assert.AreEqual(expectedHigh, fader.Fade(negativeTestValue));
-        Assert.AreEqual(expectedHigh, fader.Fade(zeroTestValue));
+        Assert.AreEqual(1.0f, fader.Fade(negativeTestValue));
+        Assert.Greater(fader.Fade(zeroTestValue), expectedHigh);
 
         //Positive values means that the test point is outside the mask
         //Hyperbolic fade attenuates in a changing gradient within the range [0,1]
@@ -150,6 +150,28 @@ public class ProceduralGenerationTests
 
         //Test for the changing gradient
         Assert.AreNotEqual(lowGradient, highGradient);
+    }
+
+    [Test]
+    public void TestGaussianFader()
+    {
+        IFaderStrategy fader = FaderFactory.MakeFader(FaderType.Hyperbolic);
+        float negativeTestValue = -1.0f;
+        float zeroTestValue = 0.0f;
+        float lowPositiveTestValue = 0.2f;
+        float positiveTestValue = 0.8f;
+
+        float expectedHigh = 0.975f;
+
+        //Negative values means that the test point is within the mask.
+        //No diminishing of the signal should happen
+        Assert.AreEqual(1.0f, fader.Fade(negativeTestValue));
+        Assert.Greater(fader.Fade(zeroTestValue), expectedHigh);
+
+        //Positive values means that the test point is outside the mask
+        //Gaussian fade attenuates in a changing gradient within the range [0,1]
+        Assert.Greater(fader.Fade(lowPositiveTestValue), 1-lowPositiveTestValue);
+        Assert.Less(fader.Fade(positiveTestValue), 1-positiveTestValue);
     }
     #endregion
     #region Mask Tests
@@ -223,6 +245,42 @@ public class ProceduralGenerationTests
         Assert.AreEqual(expectedValue, hbCentralOutput);
         Assert.AreEqual(expectedValue, hbFringeOutput1);
         Assert.AreEqual(expectedValue, hbFringeOutput2);
+
+    }
+    [Test]
+    public void TestSingleRectangularMask()
+    {
+        // Arrange masks
+        MaskConfig config = new MaskConfig();
+        config.center = new Vector2(360, 360);
+        config.sizeVariable1 = 40;
+        config.sizeVariable2 = 60;
+        config.isNegative = false;
+        IFaderStrategy linearFade = FaderFactory.MakeFader(FaderType.Linear);
+        Mask linearMask = GeneratorFactory
+            .MakeMaskGenerator(MaskGeneratorType.Rectangular, linearFade);
+        linearMask.ConfigureMask(config);
+
+        // Arrange test cases
+        Vector2 withinBounds = new Vector2(config.center.x - config.sizeVariable1 * 0.5f, config.center.y);
+        Vector2 outsideWidthBounds = new Vector2(config.center.x + config.sizeVariable1 * 1.5f, config.center.y);
+        Vector2 outsideHeightBounds = new Vector2(config.center.x, config.center.y + config.sizeVariable2 * 1.5f);
+        Vector2 diagonalDistance = new Vector2(config.center.x + config.sizeVariable1 * 1.5f, 
+                                                config.center.y + config.sizeVariable2 * 1.5f);
+
+        Assert.AreEqual(1.0f, linearMask.GeneratePixelValue((int)withinBounds.x, (int)withinBounds.y));
+        Assert.Less(linearMask.GeneratePixelValue((int)outsideHeightBounds.x, (int)outsideHeightBounds.y),
+            linearMask.GeneratePixelValue((int)withinBounds.x, (int)withinBounds.y));
+        Assert.AreEqual(
+            linearMask.GeneratePixelValue(
+                (int)outsideHeightBounds.x, (int)outsideHeightBounds.y), 
+            linearMask.GeneratePixelValue(
+                (int)outsideWidthBounds.x, (int)outsideWidthBounds.y));
+        
+        Assert.Less(linearMask.GeneratePixelValue(
+                (int)diagonalDistance.x, (int)diagonalDistance.y),
+            linearMask.GeneratePixelValue(
+                (int)outsideWidthBounds.x, (int)outsideWidthBounds.y));
 
     }
 
@@ -417,7 +475,9 @@ public class ProceduralGenerationTests
     [Test]
     public void TestPerlinNoiseSmoothness()
     {
-        Generator generator = new Generator();
+        float width = 20f;
+        float height = 20f;
+        Generator generator = new Generator(new Vector2(width, height));
         //We create the perlin generator separately as this is a randomness test and randomness doesn't always behave
         PerlinNoiseGenerator perlinNoiseGenerator = new PerlinNoiseGenerator();
         perlinNoiseGenerator.SetSeed(new Vector2(10f, 10f));
@@ -425,9 +485,8 @@ public class ProceduralGenerationTests
 
         // Arrange testing data
         float deltaToleranceThreshold = 0.5f; // This is a generous upper threshold but it ensures no two data points are too far apart
-        float width = 20f;
-        float height = 20f;
-        float[,] gridOfTestValues = generator.GenerateNoiseArray(new Vector2(width, height));
+        
+        float[,] gridOfTestValues = generator.GenerateNoiseArray();
         float rightNeighborDelta;
         float downNeighborDelta;
 
@@ -450,19 +509,19 @@ public class ProceduralGenerationTests
         // Fractal noise is not uniformly distributed, it's closer to Gaussian noise.
         // This test validates that noise is not uniformly random.
 
+        // Big old dataset (1600 entries)
+        float width = 40f;
+        float height = 40f;
+
         int[] bins = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
         //We create the perlin generator separately as this is a randomness test and randomness doesn't always behave
         PerlinNoiseGenerator perlinNoiseGenerator = new PerlinNoiseGenerator();
         perlinNoiseGenerator.SetSeed(new Vector2(10f, 10f));
-        Generator generator = new Generator();
+        Generator generator = new Generator(new Vector2(width, height));
         generator.SetNoiseGenerator(perlinNoiseGenerator);
 
-        // Big old dataset (1600 entries)
-        float width = 40f;
-        float height = 40f;
-
-        float[,] testValues = generator.GenerateNoiseArray(new Vector2(width, height));
+        float[,] testValues = generator.GenerateNoiseArray();
         int binValue;
 
         //Run a frequency counter
@@ -494,13 +553,14 @@ public class ProceduralGenerationTests
     [Test]
     public void TestNoiseValueConstraints()
     {
-        Generator perlinGenerator = new Generator();
-        perlinGenerator.SetNoiseGenerator(GeneratorFactory.MakeNoiseGenerator(NoiseGeneratorType.Perlin));
-        Generator randomGenerator = new Generator();
         Vector2 testDimensions = new Vector2(40, 40);
+        Generator perlinGenerator = new Generator(testDimensions);
+        perlinGenerator.SetNoiseGenerator(GeneratorFactory.MakeNoiseGenerator(NoiseGeneratorType.Perlin));
+        Generator randomGenerator = new Generator(testDimensions);
+        
 
-        float[,] outputPerlin = perlinGenerator.GenerateNoiseArray(testDimensions);
-        float[,] outputRandom = randomGenerator.GenerateNoiseArray(testDimensions);
+        float[,] outputPerlin = perlinGenerator.GenerateNoiseArray();
+        float[,] outputRandom = randomGenerator.GenerateNoiseArray();
 
         for (int i = 0; i < testDimensions.x; i++)
         {
