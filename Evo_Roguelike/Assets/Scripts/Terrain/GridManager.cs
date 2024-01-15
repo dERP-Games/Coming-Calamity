@@ -14,11 +14,6 @@ using UnityEditor;
 [RequireComponent(typeof(TerrainGenerationManager))]
 public class GridManager : MonoBehaviour
 {
-    public NoiseGeneratorType noiseType = NoiseGeneratorType.Default;
-    public MaskGeneratorType maskType = MaskGeneratorType.Default;
-    public FaderType faderType = FaderType.Default;
-    public int terrainWidth = 720;
-    public int terrainHeight = 720;
 
     [SerializeField]
     private Tilemap _groundTilemap;
