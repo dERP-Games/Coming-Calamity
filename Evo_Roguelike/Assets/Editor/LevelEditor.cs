@@ -11,9 +11,12 @@ public class LevelEditor : EditorWindow
 
     public GridManager gridManager;
 
+
+
     // Serialized objects and properties
     public SerializedObject serializedObject;
     public SerializedProperty propGridManager;
+
 
     /*
      * Creates window from menu at "Tools/LevelEditor"
@@ -26,8 +29,13 @@ public class LevelEditor : EditorWindow
     {
         serializedObject = new SerializedObject(this);
         propGridManager = serializedObject.FindProperty("gridManager");
+
+        if(ServiceLocator.Instance == null)
+        {
+            Debug.Log("No service locator");
+        }
     }
-  
+
     private void OnGUI()
     {
         /*
@@ -42,17 +50,8 @@ public class LevelEditor : EditorWindow
         {
             if(gridManager != null )
             {
-                // This is temporary input data. Will be replaced with data from PCG in the future.
-                int[,] testTiles = { 
-                                   { 0, 1, 1, 1, 0, 0, 2, 2, 2, 0, 0, 5, 0, 5, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 
-                                   { 0, 1, 0, 1, 0, 0, 2, 0, 0, 0, 0, 5, 5, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 
-                                   { 0, 1, 1, 1, 0, 0, 2, 2, 2, 0, 0, 5, 5, 5, 0, 0, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0 },
-                                   { 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 5, 0, 5, 0, 0, 6, 0, 6, 0, 0, 0, 0, 0, 0, 0 },
-                                   { 0, 0, 0, 1, 0, 0, 2, 2, 2, 0, 0, 5, 5, 5, 0, 0, 6, 6, 6, 0, 0, 0, 0, 0, 0, 0 }
-                                   };
 
-
-                gridManager.GenerateGroundTilesEditor(testTiles);
+                gridManager.GenerateTileData();
             }
         }
 

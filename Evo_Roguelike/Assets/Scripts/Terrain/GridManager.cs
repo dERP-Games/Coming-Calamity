@@ -14,6 +14,12 @@ using UnityEditor;
 [RequireComponent(typeof(TerrainGenerationManager))]
 public class GridManager : MonoBehaviour
 {
+    public NoiseGeneratorType noiseType = NoiseGeneratorType.Default;
+    public MaskGeneratorType maskType = MaskGeneratorType.Default;
+    public FaderType faderType = FaderType.Default;
+    public int terrainWidth = 720;
+    public int terrainHeight = 720;
+
     [SerializeField]
     private Tilemap _groundTilemap;
     [SerializeField]
@@ -77,6 +83,7 @@ public class GridManager : MonoBehaviour
         for (int i = 0; i < groundTiles.GetLength(0); i++)
         {
             for (int j = 0; j < groundTiles.GetLength(1); j++)
+
             {
                 Vector3Int tilePos = new Vector3Int(j, i, 0);
                 GroundTile.GroundTileType tileType = groundTiles[i, j];
@@ -109,8 +116,10 @@ public class GridManager : MonoBehaviour
         _groundTilemap.ClearAllTiles();
         _groundDataDict.Clear();
 
+
         int halfWidth = groundTiles.GetLength(1) / 2;
         int halfHeight = groundTiles.GetLength(0) / 2;
+
 
         for (int i = 0; i < groundTiles.GetLength(0); i++)
         {
