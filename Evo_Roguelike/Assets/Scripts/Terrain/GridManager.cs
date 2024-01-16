@@ -11,13 +11,9 @@ using UnityEditor;
  * This class is a service and will be accesible through the service locator.
  * It is responsible for managing the tilemap of the game.
  */
+[RequireComponent(typeof(TerrainGenerationManager))]
 public class GridManager : MonoBehaviour
 {
-    public NoiseGeneratorType noiseType = NoiseGeneratorType.Default;
-    public MaskGeneratorType maskType = MaskGeneratorType.Default;
-    public FaderType faderType = FaderType.Default;
-    public int terrainWidth = 720;
-    public int terrainHeight = 720;
 
     [SerializeField]
     private Tilemap _groundTilemap;
@@ -43,8 +39,8 @@ public class GridManager : MonoBehaviour
         /*
         * Initializes the tiles dictionary and tile data dictionary.
         */
-        _groundTilesDict = new Dictionary<GroundTile.GroundTileType, GroundTile> ();
-        _groundDataDict = new Dictionary<Vector3Int, GroundData> ();
+        _groundTilesDict = new Dictionary<GroundTile.GroundTileType, GroundTile>();
+        _groundDataDict = new Dictionary<Vector3Int, GroundData>();
 
         foreach (var tile in _groundTiles)
         {
@@ -57,8 +53,8 @@ public class GridManager : MonoBehaviour
         /*
          * Calls for PCG terrain generation, translates into tile types, and sends data to be contstructed into tilemap.
          */
-        Generator noiseGenerator = new Generator(noiseType, maskType, faderType);
-        float[,] noiseValues = noiseGenerator.GenerateNoiseArray(terrainWidth, terrainHeight);
+        TerrainGenerationManager tgm = GetComponent<TerrainGenerationManager>();
+        float[,] noiseValues = tgm.MakeNoiseValues();
         GenerateGroundTilesEditor(_noiseQuantizer.GroundTilesFromNoise(noiseValues));
     }
 
@@ -70,7 +66,7 @@ public class GridManager : MonoBehaviour
          * tiles : 2D array of ints representing different tiles
          */
 
-        if(_groundTilesDict == null || _groundTilesDict.Count == 0)
+        if (_groundTilesDict == null || _groundTilesDict.Count == 0)
         {
             InitializeTiles();
         }
@@ -81,7 +77,8 @@ public class GridManager : MonoBehaviour
 
         for (int i = 0; i < groundTiles.GetLength(0); i++)
         {
-            for(int j = 0; j < groundTiles.GetLength(1); j++)
+            for (int j = 0; j < groundTiles.GetLength(1); j++)
+
             {
                 Vector3Int tilePos = new Vector3Int(j, i, 0);
                 GroundTile.GroundTileType tileType = groundTiles[i, j];
@@ -114,8 +111,10 @@ public class GridManager : MonoBehaviour
         _groundTilemap.ClearAllTiles();
         _groundDataDict.Clear();
 
-        int halfWidth = groundTiles.GetLength (1) / 2;
-        int halfHeight = groundTiles.GetLength (0) / 2 ;
+
+        int halfWidth = groundTiles.GetLength(1) / 2;
+        int halfHeight = groundTiles.GetLength(0) / 2;
+
 
         for (int i = 0; i < groundTiles.GetLength(0); i++)
         {
