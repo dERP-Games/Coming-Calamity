@@ -7,20 +7,16 @@ using UnityEngine.Tilemaps;
 using UnityEditor;
 #endif
 
+
 public class GridManager
 {
-   
     // Holds all the different tile types in the game
     private Dictionary<GroundTile.GroundTileType, GroundTile> _groundTilesDict;
 
     // Mapper between tile position and tile instance data
     private Dictionary<Vector3Int, GroundData> _groundDataDict;
 
-    private NoiseGeneratorType _noiseType;
-    private MaskGeneratorType _maskType;
-    private FaderType _faderType;
-    private int _terrainWidth;
-    private int _terrainHeight;
+    private TerrainGenerationManager _terrainGenerationManager;
 
     private Tilemap _groundTilemap;
 
@@ -31,14 +27,9 @@ public class GridManager
     private bool _bGenerateNewIslandOnGameStart;
 
 
-    public GridManager(NoiseGeneratorType noiseType, MaskGeneratorType maskType, FaderType faderType, int terrainWidth, int terrainHeight, 
-        Tilemap groundTilemap, List<GroundTile> groundTiles, NoiseQuantizer noiseQuantizer, bool bGenerateNewIslandOnGameStart)
+    public GridManager(TerrainGenerationManager terrainGenerationManager, Tilemap groundTilemap, List<GroundTile> groundTiles, NoiseQuantizer noiseQuantizer, bool bGenerateNewIslandOnGameStart)
     {
-        this._noiseType = noiseType;
-        this._maskType = maskType;
-        this._faderType = faderType;
-        this._terrainHeight = terrainHeight;
-        this._terrainWidth = terrainWidth;
+        this._terrainGenerationManager = terrainGenerationManager;
         this._groundTilemap = groundTilemap;
         this._groundTiles = groundTiles;
         this._noiseQuantizer = noiseQuantizer;
@@ -58,8 +49,8 @@ public class GridManager
         /*
         * Initializes the tiles dictionary and tile data dictionary.
         */
-        _groundTilesDict = new Dictionary<GroundTile.GroundTileType, GroundTile> ();
-        _groundDataDict = new Dictionary<Vector3Int, GroundData> ();
+        _groundTilesDict = new Dictionary<GroundTile.GroundTileType, GroundTile>();
+        _groundDataDict = new Dictionary<Vector3Int, GroundData>();
 
         foreach (var tile in _groundTiles)
         {
@@ -72,8 +63,7 @@ public class GridManager
         /*
          * Calls for PCG terrain generation, translates into tile types, and sends data to be contstructed into tilemap.
          */
-        Generator noiseGenerator = new Generator(_noiseType, _maskType, _faderType);
-        float[,] noiseValues = noiseGenerator.GenerateNoiseArray(_terrainWidth, _terrainHeight);
+        float[,] noiseValues = _terrainGenerationManager.MakeNoiseValues();
         GenerateGroundTiles(_noiseQuantizer.GroundTilesFromNoise(noiseValues));
     }
 
@@ -96,8 +86,10 @@ public class GridManager
         // Clearing tiles from tilemap and tile instance data.
         ClearTilemap();
 
-        int halfWidth = groundTiles.GetLength (1) / 2;
-        int halfHeight = groundTiles.GetLength (0) / 2 ;
+
+        int halfWidth = groundTiles.GetLength(1) / 2;
+        int halfHeight = groundTiles.GetLength(0) / 2;
+
 
         for (int i = 0; i < groundTiles.GetLength(0); i++)
         {
