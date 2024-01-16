@@ -7,35 +7,50 @@ using UnityEngine.Tilemaps;
 using UnityEditor;
 #endif
 
-/*
- * This class is a service and will be accesible through the service locator.
- * It is responsible for managing the tilemap of the game.
- */
-public class GridManager : MonoBehaviour
+public class GridManager
 {
-    public NoiseGeneratorType noiseType = NoiseGeneratorType.Default;
-    public MaskGeneratorType maskType = MaskGeneratorType.Default;
-    public FaderType faderType = FaderType.Default;
-    public int terrainWidth = 720;
-    public int terrainHeight = 720;
-
-    [SerializeField]
-    private Tilemap _groundTilemap;
-    [SerializeField]
-    private List<GroundTile> _groundTiles;
-    [SerializeField]
-    private NoiseQuantizer _noiseQuantizer;
-
+   
     // Holds all the different tile types in the game
     private Dictionary<GroundTile.GroundTileType, GroundTile> _groundTilesDict;
 
     // Mapper between tile position and tile instance data
     private Dictionary<Vector3Int, GroundData> _groundDataDict;
 
+    private NoiseGeneratorType _noiseType;
+    private MaskGeneratorType _maskType;
+    private FaderType _faderType;
+    private int _terrainWidth;
+    private int _terrainHeight;
 
-    void Start()
+    private Tilemap _groundTilemap;
+
+    private List<GroundTile> _groundTiles;
+
+    private NoiseQuantizer _noiseQuantizer;
+
+    private bool _bGenerateNewIslandOnGameStart;
+
+
+    public GridManager(NoiseGeneratorType noiseType, MaskGeneratorType maskType, FaderType faderType, int terrainWidth, int terrainHeight, 
+        Tilemap groundTilemap, List<GroundTile> groundTiles, NoiseQuantizer noiseQuantizer, bool bGenerateNewIslandOnGameStart)
     {
-        InitializeTiles();
+        this._noiseType = noiseType;
+        this._maskType = maskType;
+        this._faderType = faderType;
+        this._terrainHeight = terrainHeight;
+        this._terrainWidth = terrainWidth;
+        this._groundTilemap = groundTilemap;
+        this._groundTiles = groundTiles;
+        this._noiseQuantizer = noiseQuantizer;
+        this._bGenerateNewIslandOnGameStart = bGenerateNewIslandOnGameStart;
+    }
+
+    public void Start()
+    {
+        if( _bGenerateNewIslandOnGameStart )
+        {
+            GenerateTileData();
+        }
     }
 
     private void InitializeTiles()
@@ -57,44 +72,12 @@ public class GridManager : MonoBehaviour
         /*
          * Calls for PCG terrain generation, translates into tile types, and sends data to be contstructed into tilemap.
          */
-        Generator noiseGenerator = new Generator(noiseType, maskType, faderType);
-        float[,] noiseValues = noiseGenerator.GenerateNoiseArray(terrainWidth, terrainHeight);
-        GenerateGroundTilesEditor(_noiseQuantizer.GroundTilesFromNoise(noiseValues));
+        Generator noiseGenerator = new Generator(_noiseType, _maskType, _faderType);
+        float[,] noiseValues = noiseGenerator.GenerateNoiseArray(_terrainWidth, _terrainHeight);
+        GenerateGroundTiles(_noiseQuantizer.GroundTilesFromNoise(noiseValues));
     }
 
     public void GenerateGroundTiles(GroundTile.GroundTileType[,] groundTiles)
-    {
-        /*
-         * Generates tiles in tilemap based on data passed in. Called in-game.
-         * Input
-         * tiles : 2D array of ints representing different tiles
-         */
-
-        if(_groundTilesDict == null || _groundTilesDict.Count == 0)
-        {
-            InitializeTiles();
-        }
-
-        // Clearing tiles from tilemap and tile instance data.
-        _groundTilemap.ClearAllTiles();
-        _groundDataDict.Clear();
-
-        for (int i = 0; i < groundTiles.GetLength(0); i++)
-        {
-            for(int j = 0; j < groundTiles.GetLength(1); j++)
-            {
-                Vector3Int tilePos = new Vector3Int(j, i, 0);
-                GroundTile.GroundTileType tileType = groundTiles[i, j];
-
-                _groundTilemap.SetTile(tilePos, _groundTilesDict[tileType]);
-                // Mapping tile position to its instance data.
-                _groundDataDict[tilePos] = new GroundData(_groundTilemap.CellToWorld(tilePos), tileType);
-            }
-        }
-    }
-
-#if UNITY_EDITOR
-    public void GenerateGroundTilesEditor(GroundTile.GroundTileType[,] groundTiles)
     {
         /*
          * Generates tiles in tilemap based on data passed in. Called in-editor.
@@ -111,8 +94,7 @@ public class GridManager : MonoBehaviour
         //Undo.RecordObject(_groundTilemap, "Cleared Tiles");
 
         // Clearing tiles from tilemap and tile instance data.
-        _groundTilemap.ClearAllTiles();
-        _groundDataDict.Clear();
+        ClearTilemap();
 
         int halfWidth = groundTiles.GetLength (1) / 2;
         int halfHeight = groundTiles.GetLength (0) / 2 ;
@@ -130,11 +112,23 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        EditorUtility.SetDirty(_groundTilemap);
+        #if UNITY_EDITOR
+            EditorUtility.SetDirty(_groundTilemap);
+        #endif
     }
-#endif
 
+    public void ClearTilemap()
+    {
+        if (_groundTilemap)
+        {
+            _groundTilemap.ClearAllTiles();
 
+        }
+        if (_groundDataDict != null)
+        {
+            _groundDataDict.Clear();
+        }
+    }
 
 
     /*
