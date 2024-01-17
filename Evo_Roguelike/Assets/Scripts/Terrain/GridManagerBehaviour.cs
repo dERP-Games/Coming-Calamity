@@ -9,16 +9,13 @@ using UnityEditor;
 
 /*
  * This class is a service and will be accesible through the service locator.
- * It is responsible for managing the tilemap of the game.
+ * It is a monobehavior wrapper for the GridManager class.
  */
+
+[RequireComponent(typeof(TerrainGenerationManager))]
 public class GridManagerBehaviour : MonoBehaviour
 {
-    public NoiseGeneratorType noiseType = NoiseGeneratorType.Default;
-    public MaskGeneratorType maskType = MaskGeneratorType.Default;
-    public FaderType faderType = FaderType.Default;
-    public int terrainWidth = 720;
-    public int terrainHeight = 720;
-
+    
     [SerializeField]
     private Tilemap _groundTilemap;
     [SerializeField]
@@ -29,6 +26,7 @@ public class GridManagerBehaviour : MonoBehaviour
     private bool _bGenerateNewIslandOnGameStart;
 
     private GridManager _gridManager;
+    private TerrainGenerationManager _terrainGenerationManager;
 
     public GridManager gridManager
     {
@@ -36,8 +34,8 @@ public class GridManagerBehaviour : MonoBehaviour
         {
             if(_gridManager == null)
             {
-                _gridManager = new GridManager(noiseType, maskType, faderType, terrainHeight,terrainWidth, _groundTilemap,
-                    _groundTiles, _noiseQuantizer, _bGenerateNewIslandOnGameStart);
+                _terrainGenerationManager = GetComponent<TerrainGenerationManager>();
+                _gridManager = new GridManager(_terrainGenerationManager, _groundTilemap, _groundTiles, _noiseQuantizer, _bGenerateNewIslandOnGameStart);
             }
             return _gridManager;
         }

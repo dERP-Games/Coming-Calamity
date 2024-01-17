@@ -7,7 +7,9 @@ using UnityEngine.Tilemaps;
 using UnityEditor;
 #endif
 
-
+/*
+ * This class is responsible for managing the tilemap of the game.
+ */
 public class GridManager
 {
     // Holds all the different tile types in the game
@@ -22,18 +24,29 @@ public class GridManager
 
     private List<GroundTile> _groundTiles;
 
-    private NoiseQuantizer _noiseQuantizer;
+    private NoiseQuantizer _noiseQuantizer = null;
 
     private bool _bGenerateNewIslandOnGameStart;
 
-
     public GridManager(TerrainGenerationManager terrainGenerationManager, Tilemap groundTilemap, List<GroundTile> groundTiles, NoiseQuantizer noiseQuantizer, bool bGenerateNewIslandOnGameStart)
     {
+        /*
+        * Takes in components necessary for calling PCG along with normal grid related componenets. Usually used in game.
+        */
         this._terrainGenerationManager = terrainGenerationManager;
         this._groundTilemap = groundTilemap;
         this._groundTiles = groundTiles;
         this._noiseQuantizer = noiseQuantizer;
         this._bGenerateNewIslandOnGameStart = bGenerateNewIslandOnGameStart;
+    }
+
+    public GridManager(Tilemap groundTilemap, List<GroundTile> groundTiles)
+    {
+        /*
+        * Only takes in grid related data, used for testing.
+        */
+        this._groundTilemap = groundTilemap;
+        this._groundTiles = groundTiles;
     }
 
     public void Start()
@@ -111,6 +124,9 @@ public class GridManager
 
     public void ClearTilemap()
     {
+        /*
+         * Clears tiles from tilemap and resets instance data of tilemap.
+         */
         if (_groundTilemap)
         {
             _groundTilemap.ClearAllTiles();
@@ -147,6 +163,7 @@ public class GridManager
          */
         Vector3Int cellPos = _groundTilemap.WorldToCell(worldPos);
         return _groundDataDict[cellPos].tileType;
+
     }
     #endregion
 
