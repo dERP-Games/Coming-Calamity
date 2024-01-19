@@ -9,8 +9,8 @@ using UnityEngine;
  */
 public class GroundData
 {
-    public Vector3 worldPosition { get; private set; }
-    public GroundTile.GroundTileType tileType { get; private set; }
+    public Vector3 worldPosition;
+    public GroundTile.GroundTileType tileType;
 
     public GroundData(Vector3 worldPosition, GroundTile.GroundTileType tileType)
     {
