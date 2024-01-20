@@ -9,14 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 520aa0e6f98f6354cb04b9fa87d8c06f, type: 3}
   m_Name: TestMaskSetup
   m_EditorClassIdentifier: Main::MaskSetup
-  maskConfig:
-  - isNegative: 0
-    maskType: 3
-    faderType: 1
-    faderGradient: 0.54
-    center: {x: 360, y: 360}
-    sizeVariable1: 50
-    sizeVariable2: 80
+  maskConfig: []
