@@ -45,8 +45,8 @@ public class TimeManager
         _timeCounter -= deltaTime;
         if (_timeCounter < 0f)
         {
-            D_tick?.Invoke();
             _currentTimeStep++;
+            D_tick?.Invoke();
             _timeCounter = _timeStepDuration;
         }
     }

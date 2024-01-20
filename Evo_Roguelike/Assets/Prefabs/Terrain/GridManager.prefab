@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8984015918314280331}
-  - component: {fileID: 5371666082438064769}
+  - component: {fileID: 5410590368046811195}
+  - component: {fileID: 5410331469426164814}
   m_Layer: 0
   m_Name: GridManager
   m_TagString: Untagged
@@ -32,7 +33,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5371666082438064769
+--- !u!114 &5410590368046811195
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,23 +42,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 8745175275981786323}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0e8e924a4699354fa2e6bb8d1cf2ab2, type: 3}
+  m_Script: {fileID: 11500000, guid: 8e232933f92e10649a47aafc1bd9d72d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseType: 1
-  maskType: 1
-  faderType: 1
-  terrainWidth: 50
-  terrainHeight: 50
   _groundTilemap: {fileID: 0}
   _groundTiles:
   - {fileID: 11400000, guid: 4ae13eb46f91a4449aac1b6e9b4dfd4f, type: 2}
   - {fileID: 11400000, guid: 19641d29164a93f4aa5fd962c66c595b, type: 2}
   - {fileID: 11400000, guid: 263edb611ef51db47aeebb7310b0669e, type: 2}
   - {fileID: 11400000, guid: 604dfe9c5f2158a4abef65114cf7ee8b, type: 2}
+  - {fileID: 11400000, guid: da775aadf74c2df47b5544e83e64e10f, type: 2}
   - {fileID: 11400000, guid: 2724cf66041a8904e87bd2848b1e4211, type: 2}
   - {fileID: 11400000, guid: b9e8d67f72794a34fa447a7ddfaa62f0, type: 2}
   - {fileID: 11400000, guid: c7cef9a9371d70542b2155de41e75478, type: 2}
   - {fileID: 11400000, guid: 39b8e7e6f4ad40e4f8d7da8cf5533f3f, type: 2}
-  - {fileID: 11400000, guid: da775aadf74c2df47b5544e83e64e10f, type: 2}
   _noiseQuantizer: {fileID: 11400000, guid: 9273cb97a6b44ec49a7a15f6387fbcca, type: 2}
+  _bGenerateNewIslandOnGameStart: 0
+--- !u!114 &5410331469426164814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8745175275981786323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e27fb8272410ba94a81463b837d9814d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  noiseType: 1
+  maskSetup: {fileID: 11400000, guid: 66163b97d2afa9548bcfcc3ae8dc7a1e, type: 2}
+  mapHeight: 720
+  mapWidth: 720
