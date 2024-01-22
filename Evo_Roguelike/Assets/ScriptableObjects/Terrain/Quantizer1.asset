@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a13feb62c6f0144da294b87593f751c, type: 3}
+  m_Name: Quantizer1
+  m_EditorClassIdentifier: 
+  thresholds:
+  - tileType: 2
+    minThreshold: 0
+    maxThreshold: 0.03
+    bMaxInclusive: 0
+  - tileType: 1
+    minThreshold: 0.03
+    maxThreshold: 0.15
+    bMaxInclusive: 0
+  - tileType: 3
+    minThreshold: 0.15
+    maxThreshold: 0.3
+    bMaxInclusive: 0
+  - tileType: 4
+    minThreshold: 0.3
+    maxThreshold: 0.35
+    bMaxInclusive: 0
+  - tileType: 5
+    minThreshold: 0.35
+    maxThreshold: 0.5
+    bMaxInclusive: 0
+  - tileType: 6
+    minThreshold: 0.5
+    maxThreshold: 0.6
+    bMaxInclusive: 0
+  - tileType: 7
+    minThreshold: 0.6
+    maxThreshold: 0.78
+    bMaxInclusive: 0
+  - tileType: 8
+    minThreshold: 0.78
+    maxThreshold: 1
+    bMaxInclusive: 1
