@@ -5,8 +5,13 @@ using UnityEngine;
 
 public class HazardManager
 {
+    public HazardGenerationStrategy hazardGen;
+    public List<HazardCommand> allHazards;
+    public Dictionary<int, List<HazardCommand>> hazardsToExectute;
+
     private TimeManager _timeManager;
-    private Dictionary<int, List<HazardCommand>> _hazardsToExectute;
+    
+    
 
     public HazardManager(TimeManager timeManager)
     {
@@ -23,9 +28,14 @@ public class HazardManager
         _timeManager.D_tick -= CustomTick;
     }
 
+    public void Start()
+    {
+        GenerateHazards();
+    }
+
     private void CustomTick()
     {
-        bool bSuccess = _hazardsToExectute.TryGetValue(_timeManager.CurrentTimeStep, out List<HazardCommand> hazardsThisTick);
+        bool bSuccess = hazardsToExectute.TryGetValue(_timeManager.CurrentTimeStep, out List<HazardCommand> hazardsThisTick);
         if(bSuccess)
         {
             foreach(HazardCommand hazard in hazardsThisTick)
@@ -37,6 +47,6 @@ public class HazardManager
     }
     public void GenerateHazards()
     {
-
+        hazardGen.GenerateHazards();
     }
 }

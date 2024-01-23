@@ -32,11 +32,8 @@ public class GridManagerBehaviour : MonoBehaviour
     {
         get
         {
-            if(_gridManager == null)
-            {
-                _terrainGenerationManager = GetComponent<TerrainGenerationManager>();
-                _gridManager = new GridManager(_terrainGenerationManager, _groundTilemap, _groundTiles, _noiseQuantizer, _bGenerateNewIslandOnGameStart);
-            }
+            _terrainGenerationManager = GetComponent<TerrainGenerationManager>();
+            _gridManager = new GridManager(_terrainGenerationManager, _groundTilemap, _groundTiles, _noiseQuantizer, _bGenerateNewIslandOnGameStart);
             return _gridManager;
         }
     }

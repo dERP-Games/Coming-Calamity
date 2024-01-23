@@ -76,6 +76,7 @@ public class GridManager
         /*
          * Calls for PCG terrain generation, translates into tile types, and sends data to be contstructed into tilemap.
          */
+        Debug.Log("Calling PCG for terrain");
         float[,] noiseValues = _terrainGenerationManager.MakeNoiseValues();
         GenerateGroundTiles(_noiseQuantizer.GroundTilesFromNoise(noiseValues));
     }

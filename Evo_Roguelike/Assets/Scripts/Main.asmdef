@@ -3,7 +3,9 @@
     "rootNamespace": "",
     "references": [
         "CustomInput",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.TextMeshPro",
+        "DOTween.Modules"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

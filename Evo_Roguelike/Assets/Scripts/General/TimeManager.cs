@@ -7,11 +7,13 @@ using UnityEngine;
  */
 public class TimeManager
 {
+
     public delegate void D_Tick();
     public D_Tick D_tick;
 
     // From Monobehavior
     private float _timeStepDuration;
+    private bool _bIsManual;
 
     private float _timeCounter;
     private int _currentTimeStep = 0;
@@ -27,9 +29,10 @@ public class TimeManager
         get { return _bIsPaused; }
     }
 
-    public TimeManager(float timeStepDuration)
+    public TimeManager(float timeStepDuration, bool bIsManual)
     {
         _timeStepDuration = timeStepDuration;
+        _bIsManual = bIsManual;
         _timeCounter = _timeStepDuration;
     }
 
@@ -40,7 +43,7 @@ public class TimeManager
      */
     public void Tick(float deltaTime)
     {
-        if (_bIsPaused) return;
+        if (_bIsPaused || _bIsManual) return;
 
         _timeCounter -= deltaTime;
         if (_timeCounter < 0f)
@@ -61,8 +64,18 @@ public class TimeManager
         _bIsPaused = false;
     }
 
+    public void AdvanceTimer()
+    {
+        if(_bIsManual)
+        {
+            _currentTimeStep++;
+            D_tick?.Invoke();
+        }
+    }
+
     public void SetTimeStepDuration(float timeStepDuration)
     {
         _timeStepDuration = timeStepDuration;
     }
+
 }

@@ -9,12 +9,12 @@ using UnityEngine;
  */
 public class ServiceLocator : MonoBehaviour
 {
-    public static ServiceLocator Instance { get; private set; }
+    public static ServiceLocator Instance { get;  private set; }
 
     private Dictionary<Type, MonoBehaviour> servicesDict;
 
     private void Awake()
-    { 
+    {
         if (Instance != null && Instance != this)
         {
             Destroy(this);
@@ -22,6 +22,8 @@ public class ServiceLocator : MonoBehaviour
         }
         Instance = this;
         servicesDict = new Dictionary<Type, MonoBehaviour>();
+        Debug.Log("Service Locator Online");
+
     }
 
 
