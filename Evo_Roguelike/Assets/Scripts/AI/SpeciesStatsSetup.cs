@@ -10,12 +10,12 @@ public struct StatsConfig
     public SpeciesStatsManager.SpeciesStatGroups statGroup;
 
     [Tooltip("List of all stat names in config")]
-    public List<Stat> statsList;
+    public List<SpeciesStat> statsList;
 }
 
 // Struct used for holding intial stat information
 [System.Serializable]
-public struct Stat
+public struct SpeciesStat
 {
     [Tooltip("Name of the stat")]
     public string statName;
@@ -24,8 +24,12 @@ public struct Stat
     public int defaultValue;
 }
 
+/* CLASS: SpeciesStatsSetup
+ * USAGE: Configurable object used for setting
+ * up default values for species stats
+ */
 [CreateAssetMenu(menuName = "ScriptableObjects/StatsSetup")]
-public class StatsSetup : ScriptableObject
+public class SpeciesStatsSetup : ScriptableObject
 {
     public List<StatsConfig> statConfigs;
 }
