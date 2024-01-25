@@ -19,6 +19,13 @@ public class SpeciesStatsManager : MonoBehaviour
     // Dict to hold all stats for creature population
     Dictionary<SpeciesStatGroups, Dictionary<string, int>> _SpeciesStats;
 
+    // Public properties
+    public Dictionary<SpeciesStatGroups, Dictionary<string, int>> SpeciesStats
+    {
+        get { return _SpeciesStats; }
+        set { _SpeciesStats = value; }
+    }
+
     // List of stat configurations used for setting stat structure in editor
     public SpeciesStatsSetup statSetup;
 
@@ -71,7 +78,7 @@ public class SpeciesStatsManager : MonoBehaviour
         }
 
         // Set value of specified stat
-        _SpeciesStats[statGroup].Add(statName, statValue);
+        _SpeciesStats[statGroup][statName] = statValue;
     }
 
     /*
@@ -79,14 +86,14 @@ public class SpeciesStatsManager : MonoBehaviour
 	ARGUMENTS: ---
 	OUTPUT: ---
 	*/
-    void InitSpeciesStats()
+    public void InitSpeciesStats()
     {
         // Get all configs from the stat setup object
-        List<StatsConfig> configs = statSetup.statConfigs;
+        List<SpeciesStatsConfig> configs = statSetup.statConfigs;
 
         // Iterate through each stat in each group
         // and set their value to the configured default
-        foreach(StatsConfig config in configs)
+        foreach(SpeciesStatsConfig config in configs)
         {
             foreach(SpeciesStat stat in config.statsList)
             {

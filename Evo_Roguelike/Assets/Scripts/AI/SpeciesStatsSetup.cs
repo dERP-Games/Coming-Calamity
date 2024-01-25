@@ -4,7 +4,7 @@ using UnityEngine;
 
 // Struct used for setting default stat names in editor
 [System.Serializable]
-public struct StatsConfig
+public struct SpeciesStatsConfig
 {
     [Tooltip("Stat group the list of stats belongs to")]
     public SpeciesStatsManager.SpeciesStatGroups statGroup;
@@ -31,5 +31,5 @@ public struct SpeciesStat
 [CreateAssetMenu(menuName = "ScriptableObjects/StatsSetup")]
 public class SpeciesStatsSetup : ScriptableObject
 {
-    public List<StatsConfig> statConfigs;
+    public List<SpeciesStatsConfig> statConfigs;
 }
