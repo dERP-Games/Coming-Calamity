@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// Temporary UI element that shows current timestep
+/// </summary>
 public class TimeStepCounter : MonoBehaviour
 {
     private TextMeshProUGUI _timeStepCounter;
@@ -26,7 +29,6 @@ public class TimeStepCounter : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("Attaching to delegate");
         TimeManager.D_tick += OnTick;
     }
 

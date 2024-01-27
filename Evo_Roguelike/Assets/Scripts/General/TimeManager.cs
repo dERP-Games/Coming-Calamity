@@ -65,6 +65,9 @@ public class TimeManager
         _bIsPaused = false;
     }
 
+    /// <summary>
+    /// Advanced time by one step only if timer is in manual mode.
+    /// </summary>
     public void AdvanceTimer()
     {
         if(_bIsManual && ! bIsTransitioningToNextTimeStep)

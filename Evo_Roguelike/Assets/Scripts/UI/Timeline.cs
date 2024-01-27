@@ -5,9 +5,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
+/// <summary>
+/// This class is responsible for visualing the timeline of the game through the use of UI.
+/// </summary>
 public class Timeline : MonoBehaviour
 {
     public RectMask2D rectMask;
+
+    // Sprites for building timeline
     public Sprite horLeftEdge;
     public Sprite horStraight;
     public Sprite horRightEdge;
@@ -33,13 +38,6 @@ public class Timeline : MonoBehaviour
 
     private TimeManager _timeManager;
     private HazardManager _hazardManager;
-    private int _currentHazard = 0;
-    
-
-    private void Start()
-    {
-
-    }
 
     private void OnEnable()
     {
@@ -67,23 +65,33 @@ public class Timeline : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Builds the timeline ui widget
+    /// </summary>
     private void ConstructTimeline()
     {
+        // Clears line and notch sprites if any, usually for live-edit mode.
         ClearLine();
         ClearNotches();
 
+        // Constructing left edge
         int i = -(_timelineExtent + 1);
         _lineImgs.Add(CreateAndAddImage(horLeftEdge, new Vector2(i * _distanceBetweenSteps, _timelineYOffset), "leftEdge"));
         i++;
+
+        // Constructing middle parts based on length
         while(i <= _timelineExtent)
         {
             _lineImgs.Add(CreateAndAddImage(horStraight, new Vector2(i * _distanceBetweenSteps, _timelineYOffset), "middle" + (i + _timelineExtent)));
             i++;
         }
-        _lineImgs.Add(CreateAndAddImage(horRightEdge, new Vector2(i * _distanceBetweenSteps, _timelineYOffset), "rightEdge"));
 
+        // Constructing right edge
+        _lineImgs.Add(CreateAndAddImage(horRightEdge, new Vector2(i * _distanceBetweenSteps, _timelineYOffset), "rightEdge"));
+        // Constructing arrow
         _lineImgs.Add(CreateAndAddImage(arrow, new Vector2(0, _arrowYOffset)));
 
+        // Constructing notches. If hazard at timestep use big notch, else small
         for(int j = -_timelineExtent; j <= _timelineExtent + 1; j++)
         {
             int timeStep = _timeManager.CurrentTimeStep + j;
@@ -97,18 +105,27 @@ public class Timeline : MonoBehaviour
             }
         }
 
+        // Creating the sprite mask around the widget to hide transitions
         rectMask.gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2((2 * (_timelineExtent + 1) * _distanceBetweenSteps) - 10, _timelineHeight);
     }
 
+
+    /// <summary>
+    /// Creates and adds image object to the canvas
+    /// </summary>
+    /// <param name="sprite"> Image sprite </param>
+    /// <param name="position"> Position to render image </param>
+    /// <param name="name"> Gameobject name in hierarchy </param>
+    /// <returns> The Image GameObject </returns>
     private GameObject CreateAndAddImage(Sprite sprite, Vector2 position, string name = "default")
     {
         GameObject imgObject = new GameObject(name);
 
         RectTransform trans = imgObject.AddComponent<RectTransform>();
-        trans.transform.SetParent(rectMask.transform); // setting parent
+        trans.transform.SetParent(rectMask.transform);
         trans.localScale = Vector3.one;
-        trans.anchoredPosition = position; // setting position, will be on center
-        trans.sizeDelta = new Vector2(_distanceBetweenSteps, _timelineHeight); // custom size
+        trans.anchoredPosition = position; 
+        trans.sizeDelta = new Vector2(_distanceBetweenSteps, _timelineHeight);
 
         Image image = imgObject.AddComponent<Image>();
         image.sprite = sprite;
@@ -117,24 +134,26 @@ public class Timeline : MonoBehaviour
         return imgObject;
     }
 
+    /// <summary>
+    /// On new timestep, plays transition animation
+    /// </summary>
     private void OnTick()
     {
-
         StartCoroutine(MoveNotches());
-        /*LinkedListNode<GameObject> firstNotch = _notches.First;
-
-
-        firstNotch.Value.GetComponent<RectTransform>().anchoredPosition = new Vector2(_distanceBetweenSteps * _timelineExtent, _timelineYOffset);*/
     }
 
     private void Update()
     {
+        // Reconstructs timeline every frame for visualization purposes. Should be false in actual game
         if(_bLiveEdit)
         {
             ConstructTimeline();
         }
     }
 
+    /// <summary>
+    /// Constructs timeline when hazards get generated
+    /// </summary>
     private void OnHazardsGenerated()
     {
         ConstructTimeline();
@@ -158,6 +177,10 @@ public class Timeline : MonoBehaviour
         _lineImgs.Clear();
     }
 
+    /// <summary>
+    /// Moves notches back one time step and moves first notch to last position to recycle the same gameObject.
+    /// </summary>
+    /// <returns></returns>
     IEnumerator MoveNotches()
     {
         _timeManager.bIsTransitioningToNextTimeStep = true;
@@ -170,14 +193,17 @@ public class Timeline : MonoBehaviour
             notchTween = rectTransform.DOLocalMoveX(currentX - _distanceBetweenSteps, 1f);
         }
 
+        // yields until animation is complete
         if(notchTween != null)
             yield return notchTween.WaitForCompletion();
         else
             yield return null;
 
+        // Executes after animation is complete
         LinkedListNode<GameObject> firstNotch = _notches.First;
         if(firstNotch != null)
         {
+            // Changes sprite based on if hazard is present at timestep
             int timeStep = _timeManager.CurrentTimeStep + _timelineExtent + 1;
             if (_hazardManager.GetHazardsAtTimeStamp(timeStep) != null)
             {

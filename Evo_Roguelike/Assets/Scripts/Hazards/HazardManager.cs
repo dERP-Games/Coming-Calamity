@@ -4,19 +4,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Responsible for managing hazards and executing them at the correct time.
+/// </summary>
 public class HazardManager
 {
+    // Passed in from Monobehaviour
     public HazardGenerationStrategy.Strategy generationStrategy;
-
-    public Dictionary<int, List<HazardCommand>> _hazardsToExectute;
     private TimeManager _timeManager;
+    private GridManager _gridManager;
+    private PopulationManager _populationManager;
 
+    // Holds start time of hazard and list of hazard to be executed at that time
+    public Dictionary<int, List<HazardCommand>> _hazardsToExectute;
+
+
+    // Called when hazards are generated
     public delegate void DHazardsGenerated();
     public DHazardsGenerated dHazardsGenerated;
 
-    public HazardManager(TimeManager timeManager, HazardGenerationStrategy.Strategy generationStrategy)
+    public HazardManager(TimeManager timeManager, GridManager gridManager, PopulationManager population, HazardGenerationStrategy.Strategy generationStrategy)
     {
         this._timeManager = timeManager;
+        this._gridManager = gridManager;
+        this._populationManager = population;
         this.generationStrategy = generationStrategy;
     }
 
@@ -35,6 +46,9 @@ public class HazardManager
         GenerateHazards();
     }
 
+    /// <summary>
+    /// On new timestep, checks if any hazards need to be executed and executes them
+    /// </summary>
     private void CustomTick()
     {
         bool bSuccess = _hazardsToExectute.TryGetValue(_timeManager.CurrentTimeStep, out List<HazardCommand> hazardsThisTick);
@@ -47,6 +61,10 @@ public class HazardManager
         }
 
     }
+
+    /// <summary>
+    /// Creates strategy object based on enum and asks for list of hazards.
+    /// </summary>
     public void GenerateHazards()
     {
         _hazardsToExectute = new Dictionary<int, List<HazardCommand>>();
@@ -68,13 +86,18 @@ public class HazardManager
         dHazardsGenerated?.Invoke();
     }
 
+    /// <summary>
+    /// Creates strategy object based on enum
+    /// </summary>
+    /// <param name="strategy"> Enum siginfying type of strategy to be created </param>
+    /// <returns></returns>
     public HazardGenerationStrategy GetStrategyObjectFromEnum(HazardGenerationStrategy.Strategy strategy)
     {
         switch(strategy)
         {
             case (HazardGenerationStrategy.Strategy.SimpleRandom):
             {
-                return new SimpleRandomHazardStrategy();
+                return new SimpleRandomHazardStrategy(_timeManager, _gridManager, _populationManager);
             }
             default:
                 return null;
@@ -82,6 +105,10 @@ public class HazardManager
     }
 
     #region QueryFunctions
+
+    /// <summary>
+    /// Logs current hazards in queue to the console
+    /// </summary>
     public void LogHazards()
     {
         foreach (KeyValuePair<int, List<HazardCommand>> kvp in _hazardsToExectute)
@@ -94,16 +121,16 @@ public class HazardManager
         }
     }
 
+    /// <summary>
+    /// Gets list of hazard at particular timestamp
+    /// </summary>
+    /// <param name="timestamp"> timestep at which hazards are to be exectuted at </param>
+    /// <returns></returns>
     public List<HazardCommand> GetHazardsAtTimeStamp(int timestamp)
     {
         _hazardsToExectute.TryGetValue(timestamp, out List<HazardCommand> hazardsThisTick);
         return hazardsThisTick;
     }
 
-    public void ChangeStrategy(HazardGenerationStrategy.Strategy strategy)
-    {
-        Debug.Log("Changing strategy");
-        this.generationStrategy = strategy;
-    }
     #endregion
 }
