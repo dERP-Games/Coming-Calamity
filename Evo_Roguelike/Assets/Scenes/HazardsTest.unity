@@ -1051,18 +1051,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1557007767}
     m_Modifications:
-    - target: {fileID: 5410331469426164814, guid: ca9db301a395af54095c7ba25a448582, type: 3}
-      propertyPath: maskSetup
-      value: 
-      objectReference: {fileID: 11400000, guid: ba8c7ccec66187f43a3dded9d610f3ef, type: 2}
     - target: {fileID: 5410590368046811195, guid: ca9db301a395af54095c7ba25a448582, type: 3}
       propertyPath: _groundTilemap
       value: 
       objectReference: {fileID: 336437341}
-    - target: {fileID: 5410590368046811195, guid: ca9db301a395af54095c7ba25a448582, type: 3}
-      propertyPath: _bGenerateNewIslandOnGameStart
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8745175275981786323, guid: ca9db301a395af54095c7ba25a448582, type: 3}
       propertyPath: m_Name
       value: GridManager
@@ -1281,10 +1273,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1557007767}
     m_Modifications:
-    - target: {fileID: 530063338724681258, guid: a63d2d919263efa4b852804817b67385, type: 3}
-      propertyPath: generationStrategy
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2150527673245882715, guid: a63d2d919263efa4b852804817b67385, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
