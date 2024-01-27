@@ -57,7 +57,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c7cef9a9371d70542b2155de41e75478, type: 2}
   - {fileID: 11400000, guid: 39b8e7e6f4ad40e4f8d7da8cf5533f3f, type: 2}
   _noiseQuantizer: {fileID: 11400000, guid: 9273cb97a6b44ec49a7a15f6387fbcca, type: 2}
-  _bGenerateNewIslandOnGameStart: 0
+  _bGenerateNewIslandOnGameStart: 1
 --- !u!114 &5410331469426164814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,6 +71,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseType: 1
-  maskSetup: {fileID: 11400000, guid: 66163b97d2afa9548bcfcc3ae8dc7a1e, type: 2}
+  maskSetup: {fileID: 11400000, guid: ba8c7ccec66187f43a3dded9d610f3ef, type: 2}
   mapHeight: 720
   mapWidth: 720
