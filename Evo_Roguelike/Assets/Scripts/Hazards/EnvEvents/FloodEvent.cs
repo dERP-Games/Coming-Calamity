@@ -9,6 +9,11 @@ public class FloodEvent : EnvEventCommand
 
     }
 
+    public FloodEvent(HazardFactory.EventParameters ep) : base(ep.timeToStop, ep.timeToStart, ep.gridManager, ep.populationManager)
+    {
+
+    }
+
     public override void EnvironmentEffect()
     {
         Debug.Log("Flood environmental effect");
@@ -19,4 +24,8 @@ public class FloodEvent : EnvEventCommand
         Debug.Log("Flood population effect");
     }
 
+    public override string ToString() 
+    {
+        return "Flood Event";
+    }
 }

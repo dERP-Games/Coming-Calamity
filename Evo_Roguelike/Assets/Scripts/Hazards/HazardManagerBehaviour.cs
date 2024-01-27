@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class HazardManagerBehaviour : MonoBehaviour
 {
+    public HazardGenerationStrategy.Strategy generationStrategy;
+
     private HazardManager _hazardManager;
 
     public HazardManager HazardManager
@@ -12,7 +14,8 @@ public class HazardManagerBehaviour : MonoBehaviour
         {
             if (_hazardManager == null)
             {
-                _hazardManager = new HazardManager(ServiceLocator.Instance.GetService<TimeManagerBehavior>().TimeManager);
+                TimeManager timeManager = ServiceLocator.Instance.GetService<TimeManagerBehavior>().TimeManager;
+                _hazardManager = new HazardManager(timeManager, generationStrategy);
             }
 
             return _hazardManager;
@@ -21,9 +24,17 @@ public class HazardManagerBehaviour : MonoBehaviour
 
     private void Start()
     {
-        if (_hazardManager == null)
-        {
-            _hazardManager = new HazardManager(ServiceLocator.Instance.GetService<TimeManagerBehavior>().TimeManager);
-        }
+        HazardManager.Start();
     }
+
+    private void OnEnable()
+    {
+        HazardManager.OnEnable();
+    }
+
+    private void OnDisable()
+    {
+        HazardManager.OnDisable();
+    }
+
 }

@@ -72,7 +72,7 @@ public class LevelEditor : EditorWindow
             }
             else
             {
-                gridManagerBehaviour.gridManager.GenerateTileData();
+                gridManagerBehaviour.GridManager.GenerateTileData();
             }       
         }
 
@@ -84,7 +84,7 @@ public class LevelEditor : EditorWindow
             }
             else
             {
-                gridManagerBehaviour.gridManager.ClearTilemap();
+                gridManagerBehaviour.GridManager.ClearTilemap();
             }
         }
 

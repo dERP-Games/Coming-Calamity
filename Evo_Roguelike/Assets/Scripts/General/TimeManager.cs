@@ -10,6 +10,7 @@ public class TimeManager
 
     public delegate void D_Tick();
     public D_Tick D_tick;
+    public bool bIsTransitioningToNextTimeStep = false;
 
     // From Monobehavior
     private float _timeStepDuration;
@@ -66,9 +67,10 @@ public class TimeManager
 
     public void AdvanceTimer()
     {
-        if(_bIsManual)
+        if(_bIsManual && ! bIsTransitioningToNextTimeStep)
         {
             _currentTimeStep++;
+            Debug.Log("_________________________ Timestep: " + CurrentTimeStep + "_________________________");
             D_tick?.Invoke();
         }
     }
