@@ -3,8 +3,7 @@
     "rootNamespace": "",
     "references": [
         "CustomInput",
-        "Unity.InputSystem",
-        "DOTween.Modules"
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

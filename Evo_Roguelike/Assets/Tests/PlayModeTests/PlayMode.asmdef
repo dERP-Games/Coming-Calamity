@@ -4,8 +4,7 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Main",
-        "DOTween.Modules"
+        "Main"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
