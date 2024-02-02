@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "CustomInput",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "LeanTween"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
