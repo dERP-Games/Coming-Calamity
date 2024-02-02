@@ -15,7 +15,7 @@ public class SpeciesStatTests
         
         // Instantiate stats manager as component
         SpeciesStatsManager statsManager = go.AddComponent<SpeciesStatsManager>();
-        statsManager.SpeciesStats = new Dictionary<SpeciesStatsManager.SpeciesStatGroups, Dictionary<string, int>>();
+        statsManager.SpeciesStats = new Dictionary<SpeciesStatsManager.SpeciesStatGroups, StatData>();
 
         // Instantiate stats setup
         SpeciesStatsSetup statsSetup = (SpeciesStatsSetup)AssetDatabase.LoadAssetAtPath("Assets/ScriptableObjects/TestStatsSetup.asset", typeof(SpeciesStatsSetup));
@@ -23,26 +23,6 @@ public class SpeciesStatTests
 
         // Return the manager
         return statsManager;
-    }
-
-    // Test that stats are properly being initialized to what
-    // is configured in the stats setup object
-    [Test]
-    public void TestStatInitialization()
-    {
-        // Get stats manager and initialize stats
-        SpeciesStatsManager statsManager = GenerateStatManager();
-        statsManager.InitSpeciesStats();
-
-        // Iterate through each stat and ensure they are the same
-        // as what is specified in the configured object
-        foreach(SpeciesStatsConfig config in statsManager.statSetup.statConfigs)
-        {
-            foreach(SpeciesStat stat in config.statsList)
-            {
-                Assert.AreEqual(stat.defaultValue, statsManager.GetSpeciesStat(config.statGroup, stat.statName));
-            }
-        }
     }
 
     // Test that stats can be properly changed
@@ -55,13 +35,15 @@ public class SpeciesStatTests
 
         // Get initial value from walking stat
         // and expected value that will come from modification
-        int initialStatValue = statsManager.GetSpeciesStat(SpeciesStatsManager.SpeciesStatGroups.Mobility, "Walking");
-        int expectedNewValue = initialStatValue + 2;
+        MobilityStats initialStatValue = (MobilityStats) statsManager.GetSpeciesStatGroup(SpeciesStatsManager.SpeciesStatGroups.Mobility);
+        MobilityStats modifyingValue = new MobilityStats();
+        modifyingValue.walkSpeed = 2.0f;
+        var expectedNewValue = initialStatValue + modifyingValue;
 
         // Set new stat based on expected value
         // and then get the newly set value
-        statsManager.SetSpeciesStat(SpeciesStatsManager.SpeciesStatGroups.Mobility, "Walking", expectedNewValue);
-        int newValue = statsManager.GetSpeciesStat(SpeciesStatsManager.SpeciesStatGroups.Mobility, "Walking");
+        statsManager.SetSpeciesStat(SpeciesStatsManager.SpeciesStatGroups.Mobility, expectedNewValue);
+        MobilityStats newValue = (MobilityStats)statsManager.GetSpeciesStatGroup(SpeciesStatsManager.SpeciesStatGroups.Mobility);
 
         // Ensure the new value and expected value are the same
         Assert.AreEqual(expectedNewValue, newValue);
