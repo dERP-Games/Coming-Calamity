@@ -93,11 +93,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 195b2c442e3446948b7b3efb2a4523a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mobilityTree: {fileID: 0}
+  mobilityTree: {fileID: 11400000, guid: dec054cbaa314454a90929fbeab5b52c, type: 2}
   mobilityContainer: {fileID: 2352441360350195365}
-  durabilityTree: {fileID: 0}
+  durabilityTree: {fileID: 11400000, guid: 08b0026d1fd6b11419eca54d58cd5c13, type: 2}
   durabilityContainer: {fileID: 1440764189627453132}
-  ferocityTree: {fileID: 0}
+  ferocityTree: {fileID: 11400000, guid: e69a2c8255dbee64d95a1da141a893de, type: 2}
   ferocityContainer: {fileID: 4443756958441543048}
   descriptionText: {fileID: 0}
 --- !u!1 &421528254138599410
