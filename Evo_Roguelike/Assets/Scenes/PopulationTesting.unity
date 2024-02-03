@@ -677,6 +677,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialSpawnCount: 6
+  populationVitalityRanges: {fileID: 11400000, guid: c7d058454cc2e714b8dd2a1b7d2a33ef, type: 2}
 --- !u!4 &1504654607
 Transform:
   m_ObjectHideFlags: 0

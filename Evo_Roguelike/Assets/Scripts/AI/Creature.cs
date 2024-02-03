@@ -13,12 +13,21 @@ public class Creature : MonoBehaviour
 
     // Get reference to creature's state machine
     CreatureStateMachine _StateMachine;
+    VitalityStatsComponent _VitalityStats;
 
+    // Public get properties
     public CreatureStateMachine StateMachine
     {
         // Get state machine
         get { return _StateMachine; }
     }
+
+    public VitalityStatsComponent VitalityStats
+    {
+        // Get vitality stats
+        get { return _VitalityStats; }
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -34,14 +43,13 @@ public class Creature : MonoBehaviour
         _StateMachine.bIsActive = bIsActive;
     }
 
-    /*
-	USAGE: Initialize the object's fields and components
-	ARGUMENTS: ---
-	OUTPUT: ---
-	*/
+    /// <summary>
+    /// Initialize the object's fields and components
+    /// </summary>
     void Init()
     {
         // Init component references
         _StateMachine = GetComponent<CreatureStateMachine>();
+        _VitalityStats = GetComponent<VitalityStatsComponent>();
     }
 }
