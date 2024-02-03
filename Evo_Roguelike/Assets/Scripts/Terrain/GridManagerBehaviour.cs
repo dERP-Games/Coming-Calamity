@@ -28,6 +28,7 @@ public class GridManagerBehaviour : MonoBehaviour
     private GridManager _gridManager;
     private TerrainGenerationManager _terrainGenerationManager;
 
+
     public GridManager gridManager
     {
         get
@@ -50,6 +51,6 @@ public class GridManagerBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
