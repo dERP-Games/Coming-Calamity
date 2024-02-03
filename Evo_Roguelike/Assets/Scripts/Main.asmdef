@@ -4,8 +4,7 @@
     "references": [
         "CustomInput",
         "Unity.InputSystem",
-        "Unity.TextMeshPro",
-        "DOTween.Modules"
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 /// <summary>
 /// This class is responsible for visualing the timeline of the game through the use of UI.
@@ -185,7 +184,7 @@ public class Timeline : MonoBehaviour
     {
         _timeManager.bIsTransitioningToNextTimeStep = true;
 
-        Tween notchTween = null;
+        /*Tween notchTween = null;
         foreach (GameObject _notch in _notches)
         {
             RectTransform rectTransform = _notch.GetComponent<RectTransform>();
@@ -196,7 +195,7 @@ public class Timeline : MonoBehaviour
         // yields until animation is complete
         if(notchTween != null)
             yield return notchTween.WaitForCompletion();
-        else
+        else*/
             yield return null;
 
         // Executes after animation is complete

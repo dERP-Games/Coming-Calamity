@@ -5,9 +5,6 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "Main",
-        "DOTween.Modules",
-		"DOTween.Core",
-		"DOTween.Plugins",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
