@@ -138,7 +138,7 @@ public class Timeline : MonoBehaviour
     /// </summary>
     private void OnTick()
     {
-        StartCoroutine(MoveNotches());
+        MoveNotches();
     }
 
     private void Update()
@@ -180,27 +180,28 @@ public class Timeline : MonoBehaviour
     /// Moves notches back one time step and moves first notch to last position to recycle the same gameObject.
     /// </summary>
     /// <returns></returns>
-    IEnumerator MoveNotches()
+    private void MoveNotches()
     {
         _timeManager.bIsTransitioningToNextTimeStep = true;
-
-        /*Tween notchTween = null;
+        LTDescr lt = null;
         foreach (GameObject _notch in _notches)
         {
             RectTransform rectTransform = _notch.GetComponent<RectTransform>();
             float currentX = rectTransform.anchoredPosition.x;
-            notchTween = rectTransform.DOLocalMoveX(currentX - _distanceBetweenSteps, 1f);
+            lt = LeanTween.moveLocalX(rectTransform.gameObject, currentX - _distanceBetweenSteps, 1f);
         }
 
-        // yields until animation is complete
-        if(notchTween != null)
-            yield return notchTween.WaitForCompletion();
-        else*/
-            yield return null;
+        if(lt != null )
+            lt.setOnComplete(OnNotchTweenComplete);
+        else
+            _timeManager.bIsTransitioningToNextTimeStep = false;
 
-        // Executes after animation is complete
+    }
+
+    private void OnNotchTweenComplete()
+    {
         LinkedListNode<GameObject> firstNotch = _notches.First;
-        if(firstNotch != null)
+        if (firstNotch != null)
         {
             // Changes sprite based on if hazard is present at timestep
             int timeStep = _timeManager.CurrentTimeStep + _timelineExtent + 1;
