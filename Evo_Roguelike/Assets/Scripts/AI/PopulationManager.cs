@@ -14,6 +14,12 @@ public class PopulationManager : MonoBehaviour
     // Private fields
     Creature[] _Creatures;
 
+    // Public field for getting species stat manager
+    public SpeciesStatsManager StatsManager
+    {
+        get { return GetComponent<SpeciesStatsManager>(); }
+    }
+
     // Start is called before the first frame update
     void Start()
     {

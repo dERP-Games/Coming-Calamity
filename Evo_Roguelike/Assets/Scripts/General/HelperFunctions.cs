@@ -18,4 +18,22 @@ public static class HelperFunctions
 
         return false;
     }
+
+    public static float ZeroOrMore(float value)
+    {
+        if (value < 0)
+        {
+            return 0.0f;
+        }
+        return value;
+    }
+
+    public static int ZeroOrMore(int value)
+    {
+        if (value < 0)
+        {
+            return 0;
+        }
+        return value;
+    }
 }
