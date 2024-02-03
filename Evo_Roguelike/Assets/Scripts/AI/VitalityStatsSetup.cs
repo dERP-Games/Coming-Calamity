@@ -2,10 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Public enum for vitality stat types
+public enum VitalityStatType
+{
+    Health,
+    Hunger
+}
+
 // Struct used for holding intial stat information
 [System.Serializable]
 public struct VitalityStat
 {
+    [Tooltip("Stat type")]
+    public VitalityStatType statType;
+
     [Tooltip("Sets median for this stat")]
     public int medianValue;
 

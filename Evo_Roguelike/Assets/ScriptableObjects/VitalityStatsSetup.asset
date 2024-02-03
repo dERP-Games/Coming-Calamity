@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: VitalityStatsSetup
   m_EditorClassIdentifier: 
   statConfigs:
-  - medianValue: 100
+  - statType: 0
+    medianValue: 100
     stdDev: 10
-  - medianValue: 100
+  - statType: 1
+    medianValue: 100
     stdDev: 10

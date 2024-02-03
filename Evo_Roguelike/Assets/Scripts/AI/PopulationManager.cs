@@ -124,10 +124,23 @@ public class PopulationManager : MonoBehaviour
         foreach(Creature creature in _Creatures)
         {
             VitalityStatsComponent vitals = creature.VitalityStats;
-            vitals.MaxHealth = HelperFunctions.Gaussian(statConfigs[0].medianValue, statConfigs[0].stdDev);
-            vitals.MaxHunger = HelperFunctions.Gaussian(statConfigs[1].medianValue, statConfigs[1].stdDev);
-            vitals.Health = vitals.MaxHealth;
-            vitals.Hunger = vitals.MaxHunger;
+
+            // Go through each stat in config and set stats per type
+            foreach(VitalityStat stat in statConfigs)
+            {
+                switch (stat.statType)
+                {
+                    case VitalityStatType.Health:
+                        vitals.MaxHealth = HelperFunctions.Gaussian(stat.medianValue, stat.stdDev);
+                        vitals.Health = vitals.MaxHealth;
+                        break;
+                    case VitalityStatType.Hunger:
+                        vitals.MaxHunger = HelperFunctions.Gaussian(stat.medianValue, stat.stdDev);
+                        vitals.Hunger = vitals.MaxHunger;
+                        break;
+                }
+
+            }
         }
     }
 }
