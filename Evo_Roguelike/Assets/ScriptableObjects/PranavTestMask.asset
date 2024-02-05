@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 520aa0e6f98f6354cb04b9fa87d8c06f, type: 3}
+  m_Name: PranavTestMask
+  m_EditorClassIdentifier: 
+  maskConfig:
+  - isNegative: 0
+    maskType: 1
+    faderType: 2
+    faderGradient: 0.33
+    center: {x: 310, y: 310}
+    sizeVariable1: 200
+    sizeVariable2: 0

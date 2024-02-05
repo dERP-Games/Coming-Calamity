@@ -7,6 +7,12 @@ using UnityEngine;
  */
 public class TimeManagerBehavior : MonoBehaviour
 {
+
+    [SerializeField]
+    private float _timeStepDuration = 20f;
+    [SerializeField, Tooltip("If manual, timer step duration is irrelevant and timer needs to be told when to go to next timestep.")]
+    private bool _bIsManual = true;
+
     private TimeManager _timeManager;
 
     public TimeManager TimeManager
@@ -14,7 +20,7 @@ public class TimeManagerBehavior : MonoBehaviour
         get {
             if (_timeManager == null)
             {
-                _timeManager = new TimeManager(_timeStepDuration);
+                _timeManager = new TimeManager(_timeStepDuration, _bIsManual);
                 return _timeManager;
             }
 
@@ -22,12 +28,14 @@ public class TimeManagerBehavior : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    private float _timeStepDuration = 20f;
-
     void Update()
     {
         TimeManager.Tick(Time.deltaTime);
+    }
+
+    public void AdvanceTimer()
+    {
+        TimeManager.AdvanceTimer();
     }
 
 }

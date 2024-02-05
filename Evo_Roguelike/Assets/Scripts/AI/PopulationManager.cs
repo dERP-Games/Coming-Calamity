@@ -10,9 +10,16 @@ public class PopulationManager : MonoBehaviour
 {
     // Public fields
     public int initialSpawnCount = 5;
+    public VitalityStatsSetup populationVitalityRanges;
 
     // Private fields
     Creature[] _Creatures;
+
+    // Public field for getting species stat manager
+    public SpeciesStatsManager StatsManager
+    {
+        get { return GetComponent<SpeciesStatsManager>(); }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -23,13 +30,14 @@ public class PopulationManager : MonoBehaviour
         // Spawn the initial population,
         // delayed to help prevent race conditions
         Invoke("SpawnInitialPopulation", 0.1f);
+
+        // Initialize population vital stats
+        InitializePopulationVitals();
     }
 
-    /*
-	USAGE: Spawns the first set of creatures into the environment
-	ARGUMENTS: ---
-	OUTPUT: ---
-	*/
+    /// <summary>
+    /// Spawns the first set of creatures into the environment
+    /// </summary>
     void SpawnInitialPopulation()
     {
         // Check list isn't empty
@@ -47,11 +55,10 @@ public class PopulationManager : MonoBehaviour
         }
     }
 
-    /*
-	USAGE: Gets the next available creature from the pool to be spawned in
-	ARGUMENTS: ---
-	OUTPUT: int, the index of that creature in the creatures array
-	*/
+    /// <summary>
+    /// Gets the next available creature from the pool to be spawned in
+    /// </summary>
+    /// <returns>int, the index of that creature in the creatures array</returns>
     int GetNextAvailableCreature()
     {
         // Iterate through the creatures until you
@@ -69,12 +76,10 @@ public class PopulationManager : MonoBehaviour
         return -1;
     }
 
-    /*
-	USAGE: Spawns a creature into the environment and updates needed values
-	ARGUMENTS:
-    -	int creatureIndex -> location of creature reference in creatures array
-	OUTPUT: ---
-	*/
+    /// <summary>
+    /// Spawns a creature into the environment and updates needed values
+    /// </summary>
+    /// <param name="creatureIndex">Location of creature reference in creatures array</param>
     void SpawnCreature(int creatureIndex)
     {
         // Get creature from index
@@ -89,11 +94,10 @@ public class PopulationManager : MonoBehaviour
         creature.StateMachine.TransitionToState(CreatureStateMachine.CreatureStates.Wandering);
     }
 
-    /*
-	USAGE: Finds a random location on the orthographic screen
-	ARGUMENTS: ---
-	OUTPUT: Vector2, randomly calculated location
-	*/
+    /// <summary>
+    /// Finds a random location on the orthographic screen
+    /// </summary>
+    /// <returns>Vector2, Randomly calculated location</returns>
     Vector2 GetRandomPointOnScreen()
     {
         // Get max height and width values from screen
@@ -105,5 +109,38 @@ public class PopulationManager : MonoBehaviour
         float newPosY = Random.Range(-maxHeight, maxHeight);
 
         return new Vector2(newPosX, newPosY);
+    }
+
+
+    /// <summary>
+    /// Initializes vitality stats for each creature in population
+    /// </summary>
+    void InitializePopulationVitals()
+    {
+        // Get config for vitality stats
+        List<VitalityStat> statConfigs = populationVitalityRanges.statConfigs;
+
+        // Iterate through each creature setting their initial stat values
+        foreach(Creature creature in _Creatures)
+        {
+            VitalityStatsComponent vitals = creature.VitalityStats;
+
+            // Go through each stat in config and set stats per type
+            foreach(VitalityStat stat in statConfigs)
+            {
+                switch (stat.statType)
+                {
+                    case VitalityStatType.Health:
+                        vitals.MaxHealth = HelperFunctions.Gaussian(stat.medianValue, stat.stdDev);
+                        vitals.Health = vitals.MaxHealth;
+                        break;
+                    case VitalityStatType.Hunger:
+                        vitals.MaxHunger = HelperFunctions.Gaussian(stat.medianValue, stat.stdDev);
+                        vitals.Hunger = vitals.MaxHunger;
+                        break;
+                }
+
+            }
+        }
     }
 }

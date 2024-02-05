@@ -128,52 +128,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8984015918314280331, guid: ca9db301a395af54095c7ba25a448582, type: 3}
   m_PrefabInstance: {fileID: 6996429267195464079}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &499366011 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8745175275981786323, guid: ca9db301a395af54095c7ba25a448582, type: 3}
-  m_PrefabInstance: {fileID: 6996429267195464079}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &499366012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 499366011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e232933f92e10649a47aafc1bd9d72d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _groundTilemap: {fileID: 1618835935}
-  _groundTiles:
-  - {fileID: 11400000, guid: 4ae13eb46f91a4449aac1b6e9b4dfd4f, type: 2}
-  - {fileID: 11400000, guid: 19641d29164a93f4aa5fd962c66c595b, type: 2}
-  - {fileID: 11400000, guid: 263edb611ef51db47aeebb7310b0669e, type: 2}
-  - {fileID: 11400000, guid: 604dfe9c5f2158a4abef65114cf7ee8b, type: 2}
-  - {fileID: 11400000, guid: da775aadf74c2df47b5544e83e64e10f, type: 2}
-  - {fileID: 11400000, guid: 2724cf66041a8904e87bd2848b1e4211, type: 2}
-  - {fileID: 11400000, guid: b9e8d67f72794a34fa447a7ddfaa62f0, type: 2}
-  - {fileID: 11400000, guid: c7cef9a9371d70542b2155de41e75478, type: 2}
-  - {fileID: 11400000, guid: 39b8e7e6f4ad40e4f8d7da8cf5533f3f, type: 2}
-  _noiseQuantizer: {fileID: 11400000, guid: 9273cb97a6b44ec49a7a15f6387fbcca, type: 2}
-  _bGenerateNewIslandOnGameStart: 0
---- !u!114 &499366013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 499366011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e27fb8272410ba94a81463b837d9814d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  noiseType: 1
-  maskSetup: {fileID: 11400000, guid: 66163b97d2afa9548bcfcc3ae8dc7a1e, type: 2}
-  mapHeight: 720
-  mapWidth: 720
 --- !u!1 &555901730
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,6 +507,14 @@ PrefabInstance:
       propertyPath: _bGenerateNewIslandOnGameStart
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5410331469426164814, guid: ca9db301a395af54095c7ba25a448582, type: 3}
+      propertyPath: maskSetup
+      value: 
+      objectReference: {fileID: 11400000, guid: ba8c7ccec66187f43a3dded9d610f3ef, type: 2}
+    - target: {fileID: 5410590368046811195, guid: ca9db301a395af54095c7ba25a448582, type: 3}
+      propertyPath: _groundTilemap
+      value: 
+      objectReference: {fileID: 1618835935}
     - target: {fileID: 8745175275981786323, guid: ca9db301a395af54095c7ba25a448582, type: 3}
       propertyPath: m_Name
       value: GridManager
@@ -601,13 +563,7 @@ PrefabInstance:
     - {fileID: 5371666082438064769, guid: ca9db301a395af54095c7ba25a448582, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8745175275981786323, guid: ca9db301a395af54095c7ba25a448582, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 499366012}
-    - targetCorrespondingSourceObject: {fileID: 8745175275981786323, guid: ca9db301a395af54095c7ba25a448582, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 499366013}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ca9db301a395af54095c7ba25a448582, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

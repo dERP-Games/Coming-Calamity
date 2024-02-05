@@ -9,22 +9,21 @@ using UnityEditor;
 public class LevelEditor : EditorWindow
 {
 
-    private GridManager _gridManager;
+    private GridManagerBehaviour _gridManagerBehaviour;
 
     // Serialized objects and properties
     public SerializedObject serializedObject;
 
 
-    public GridManager gridManager
+    public GridManagerBehaviour gridManagerBehaviour
     {
         get
         {
-            if (_gridManager == null)
+            if (_gridManagerBehaviour == null)
             {
-                GridManagerBehaviour gridManagerBehaviour = GameObject.FindObjectOfType<GridManagerBehaviour>();
-                _gridManager = gridManagerBehaviour.gridManager;
+                _gridManagerBehaviour = GameObject.FindObjectOfType<GridManagerBehaviour>();
             }
-            return _gridManager; 
+            return _gridManagerBehaviour; 
         }
     }
 
@@ -54,20 +53,43 @@ public class LevelEditor : EditorWindow
         // Syncing serialized object with target object
         serializedObject.Update();
 
-        EditorGUILayout.BeginHorizontal();
+        if(GUILayout.Button("Initialize Level Editor"))
+        {
+            InitializeVitalComponents();
+        }
+
+        
+
+
+        //EditorGUILayout.BeginHorizontal();
 
         //EditorGUILayout.PropertyField(propGridManager);
         if (GUILayout.Button("Generate New Island") && ShowConfirmationBox("Display New Island?"))
         {
-            gridManager.GenerateTileData();        
+            if(gridManagerBehaviour == null)
+            {
+                Debug.Log("No grid manager");
+            }
+            else
+            {
+                gridManagerBehaviour.GridManager.GenerateTileData();
+            }       
         }
 
-        if(GUILayout.Button("Clear Tiles") && ShowConfirmationBox("Clear All Tiles?"))
+        if (GUILayout.Button("Clear Tiles") && ShowConfirmationBox("Clear All Tiles?"))
         {
-            gridManager.ClearTilemap();
+            if (gridManagerBehaviour == null)
+            {
+                Debug.Log("No grid manager");
+            }
+            else
+            {
+                gridManagerBehaviour.GridManager.ClearTilemap();
+            }
         }
 
-        EditorGUILayout.EndHorizontal();
+       // EditorGUILayout.EndHorizontal(); 
+       
 
         // Flushing any changes made.
         if(serializedObject.ApplyModifiedProperties())
@@ -79,5 +101,22 @@ public class LevelEditor : EditorWindow
     private bool ShowConfirmationBox(string message)
     {
         return EditorUtility.DisplayDialog("Please Confirm", message, "Ok", "Cancel");
+    }
+
+    private void InitializeVitalComponents()
+    {
+        if (_gridManagerBehaviour == null)
+        {
+            _gridManagerBehaviour = GameObject.FindObjectOfType<GridManagerBehaviour>();
+        }
+    }
+
+    private bool AreVitalComponentsInitialized()
+    {
+        if(_gridManagerBehaviour == null)
+        {
+            return false;
+        }
+        return true;
     }
 }

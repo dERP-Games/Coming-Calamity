@@ -62,7 +62,8 @@ public class KinematicMovement : MonoBehaviour
         _SpriteRenderer = GetComponent<SpriteRenderer>();
 
         // Set the first wander position
-        SetWanderPosition();
+        if(_bIsWandering)
+            SetWanderPosition();
     }
 
     // Update is called once per frame
