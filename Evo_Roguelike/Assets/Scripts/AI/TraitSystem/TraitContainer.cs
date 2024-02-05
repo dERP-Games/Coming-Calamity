@@ -24,7 +24,7 @@ public class TraitContainer : MonoBehaviour
      */
     public void UpdateInformation()
     {
-        traitTitleContainer.text = trait.traitName;
+        traitTitleContainer.text = trait.name;
         traitImage.sprite = trait.icon;
     }
 
