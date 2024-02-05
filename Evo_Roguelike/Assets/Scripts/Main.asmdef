@@ -5,6 +5,7 @@
         "CustomInput",
         "Unity.InputSystem",
         "Unity.TextMeshPro",
+        "LeanTween",
         "Unity.TextMeshPro.Editor"
     ],
     "includePlatforms": [],

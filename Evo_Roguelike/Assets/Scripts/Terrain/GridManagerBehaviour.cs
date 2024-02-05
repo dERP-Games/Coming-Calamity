@@ -28,15 +28,16 @@ public class GridManagerBehaviour : MonoBehaviour
     private GridManager _gridManager;
     private TerrainGenerationManager _terrainGenerationManager;
 
-    public GridManager gridManager
+    public GridManager GridManager
     {
         get
         {
-            if(_gridManager == null)
+            if( _gridManager == null )
             {
                 _terrainGenerationManager = GetComponent<TerrainGenerationManager>();
                 _gridManager = new GridManager(_terrainGenerationManager, _groundTilemap, _groundTiles, _noiseQuantizer, _bGenerateNewIslandOnGameStart);
             }
+           
             return _gridManager;
         }
     }
@@ -44,12 +45,12 @@ public class GridManagerBehaviour : MonoBehaviour
 
     void Start()
     {
-        gridManager.Start();
+        GridManager.Start();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
