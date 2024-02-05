@@ -34,4 +34,22 @@ public static class HelperFunctions
             Mathf.Sin(2.0f * Mathf.PI * val2);
         return mean + stdDev * gaussValue;
     }
+    
+    public static float ZeroOrMore(float value)
+    {
+        if (value < 0)
+        {
+            return 0.0f;
+        }
+        return value;
+    }
+
+    public static int ZeroOrMore(int value)
+    {
+        if (value < 0)
+        {
+            return 0;
+        }
+        return value;
+    }
 }

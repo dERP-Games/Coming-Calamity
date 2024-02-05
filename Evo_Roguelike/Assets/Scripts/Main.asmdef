@@ -3,7 +3,9 @@
     "rootNamespace": "",
     "references": [
         "CustomInput",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.TextMeshPro",
+        "Unity.TextMeshPro.Editor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
