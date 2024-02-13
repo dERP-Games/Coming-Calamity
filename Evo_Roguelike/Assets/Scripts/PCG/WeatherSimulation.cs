@@ -41,19 +41,19 @@ public static class WeatherService
     public static float CalculateTemperatureBoundExpansion(int timeMarker)
     {
 
-        return Mathf.Pow(timeMarker, 0.25f);
+        return Mathf.Pow(0.1f*timeMarker, 0.25f);
     }
 
     /*
      The formula for calculating the humidity output of the current turn. Humidity decreases
-    with height. Outputs are bounded to [0,1]
+    with height and is independent of temperature. Outputs are bounded to [0,1]
      */
     public static float CalculateHumidity(int timeMarker, float height)
     {
         TerrainGenerationManager tgm = ServiceLocator.Instance.GetService<TerrainGenerationManager>();
         float heightSubtraction = height * tgm.heightTemperatureSlope;
         float phaseShift = 2 * timeMarker + tgm.humidityPhaseShift;
-        return Mathf.Clamp01(1+Mathf.Sin(phaseShift) - heightSubtraction);
+        return Mathf.Clamp01(0.5f+0.5f*Mathf.Sin(phaseShift) - heightSubtraction);
     }
 
     /*
@@ -63,6 +63,6 @@ public static class WeatherService
     */
     public static float CalculatePrecipitationChance(float temperature, float humidity)
     {
-        return 0.2f * Mathf.Abs(0.5f * temperature) * humidity;
+        return .75f * Mathf.Abs(0.5f * temperature) * humidity;
     }
 }
