@@ -7,6 +7,8 @@ using UnityEngine.TestTools;
 
 public class ProceduralGenerationTests
 {
+    // We need to mock a service locator, the weather service depends on it
+    GameObject serviceLocator = MockServiceLocator();
     #region Fixtures
     public MaskConfig[] SingleRadialMaskConfig()
     {
@@ -56,6 +58,22 @@ public class ProceduralGenerationTests
         mask[1].sizeVariable1 = 70f;
         mask[1].isNegative = false;
         return mask;
+    }
+
+    public static GameObject MockServiceLocator()
+    {
+        GameObject go = new GameObject();
+        ServiceLocator sl = go.AddComponent<ServiceLocator>();
+        GameObject terrainManager = new GameObject();
+        TerrainGenerationManager tgm = terrainManager.AddComponent<TerrainGenerationManager>();
+        terrainManager.transform.SetParent(go.transform);
+
+        tgm.heightTemperatureSlope = 1f;
+        tgm.humidityPhaseShift = 0.5f;
+
+        sl.Awake();
+        return go;
+        
     }
     #endregion
     #region Fader Tests
@@ -573,6 +591,127 @@ public class ProceduralGenerationTests
                 Assert.GreaterOrEqual(outputRandom[i, j], 0.0f);
             }
         }
+    }
+    #endregion
+    #region Weather Service
+    [Test]
+    public void TestSlowBoundExpansion()
+    {
+        // These test parameters will probably shift as we refine the game
+        int firstTurn = 1;
+        int earlyTurn = 10;
+        int midGame = 30;
+        int lateGame = 60;
+
+        Assert.Less(WeatherService.CalculateTemperatureBoundExpansion(firstTurn), 2);
+        Assert.Less(WeatherService.CalculateTemperatureBoundExpansion(earlyTurn),2);
+        Assert.Less(WeatherService.CalculateTemperatureBoundExpansion(midGame), 2);
+        Assert.Less(WeatherService.CalculateTemperatureBoundExpansion(lateGame), 2);
+
+        Assert.Greater(WeatherService.CalculateTemperatureBoundExpansion(midGame), 1);
+        Assert.Greater(WeatherService.CalculateTemperatureBoundExpansion(lateGame), 1);
+    }
+
+    [Test]
+    public void TestTemperatureSimulation()
+    {
+        // Temperature maximums and minimums should increase with every turn.
+        // Even turns are maximums, odd turns are minimums.
+
+        float prevBoundExpansion;
+        float currentBoundExpansion;
+        float currentValue;
+        float previousValue;
+        float lowHeight = 0.0f;
+        float highHeight = 1.0f;
+        int maxTest = 60;
+
+        float setBoundExpansion = WeatherService.CalculateTemperatureBoundExpansion(1);
+        float lowHeightTemperatureValue = WeatherService.CalculateTemperature(1, 0, setBoundExpansion, lowHeight);
+        float highHeightTemperatureValue = WeatherService.CalculateTemperature(1, 0, setBoundExpansion, highHeight);
+
+        for (int i = 2; i < maxTest; i += 2)
+        {
+            prevBoundExpansion = WeatherService.CalculateTemperatureBoundExpansion(i - 2);
+            currentBoundExpansion = WeatherService.CalculateTemperatureBoundExpansion(i);
+            previousValue = WeatherService.CalculateTemperature(i - 2, 0, prevBoundExpansion, 0.0f);
+            currentValue = WeatherService.CalculateTemperature(i, 0, currentBoundExpansion, 0.0f);
+            Assert.Greater(currentValue, previousValue);
+        }
+
+        for (int i = 3; i < maxTest; i += 2)
+        {
+            prevBoundExpansion = WeatherService.CalculateTemperatureBoundExpansion(i - 2);
+            currentBoundExpansion = WeatherService.CalculateTemperatureBoundExpansion(i);
+            previousValue = WeatherService.CalculateTemperature(i - 2, 0, prevBoundExpansion, 0.0f);
+            currentValue = WeatherService.CalculateTemperature(i, 0, currentBoundExpansion, 0.0f);
+            Assert.Less(currentValue, previousValue);
+        }
+
+        // Higher heights should show less temperature
+        Assert.Less(highHeightTemperatureValue, lowHeightTemperatureValue);
+    }
+
+    [Test]
+    public void TestHumiditySimulation()
+    {
+
+        int firstTurn = 1;
+        int maxTurn = 60;
+        float lowHeight = 0.0f;
+        float midHeight = 0.5f;
+        float highHeight = 1.0f;
+
+        float earlyHumidityLowHeight = WeatherService.CalculateHumidity(firstTurn, lowHeight);
+        float earlyHumidityMidHeight = WeatherService.CalculateHumidity(firstTurn, midHeight);
+        float earlyHumidityHighHeight = WeatherService.CalculateHumidity(firstTurn, highHeight);
+
+        //Humidity should decrease as we increase in height
+        Assert.Less(earlyHumidityMidHeight, earlyHumidityLowHeight);
+        Assert.Less(earlyHumidityHighHeight, earlyHumidityMidHeight);
+
+        // Values should be bound between 0 and 1
+        for (int i = 0; i < maxTurn; i++)
+        {
+            float cycleValue = WeatherService.CalculateHumidity(i, lowHeight);
+            Assert.LessOrEqual(cycleValue, 1);
+            Assert.GreaterOrEqual(cycleValue, 0);
+        }
+    }
+
+    [Test]
+    public void TestTemperatePrecipitationChance()
+    {
+
+        // Setting is early game and height is attenuating temperature and humidity
+        int temperateTurn = 2;
+        float testHeight = 0.2f;
+        float temperatureBounds = WeatherService.CalculateTemperatureBoundExpansion(temperateTurn);
+        float temperature = WeatherService.CalculateTemperature(temperateTurn, 0, temperatureBounds, testHeight);
+        float humidity = WeatherService.CalculateHumidity(temperateTurn, testHeight);
+
+        float chanceOfPrecipitation = WeatherService.CalculatePrecipitationChance(temperature, humidity);
+
+        // There should be a very, very low chance of precipitation
+        Assert.Less(chanceOfPrecipitation, 0.05f);
+
+    }
+
+    [Test]
+    public void TestExtremeConditionPrecipitationChance()
+    {
+        // Setting is late game, corresponding to a turn with high humidity and no attenuating height is present
+        int lateTurn = 54;
+        float testHeight = 0.0f;
+        float temperatureBounds = WeatherService.CalculateTemperatureBoundExpansion(lateTurn);
+        float temperature = WeatherService.CalculateTemperature(lateTurn, 0, temperatureBounds, testHeight);
+        Debug.Log(temperature);
+        float humidity = WeatherService.CalculateHumidity(lateTurn, testHeight);
+
+        float chanceOfPrecipitation = WeatherService.CalculatePrecipitationChance(temperature, humidity);
+
+        // There should be a very, very low chance of precipitation
+        Assert.Greater(chanceOfPrecipitation, 0.5f);
     }
     #endregion
 }
