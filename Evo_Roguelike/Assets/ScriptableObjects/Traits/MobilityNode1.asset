@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1598819c8ebcbe445a5586f63857aa1f, type: 3}
-  m_Name: MobilityRootNode
+  m_Name: MobilityNode1
   m_EditorClassIdentifier: 
   trait: {fileID: 11400000, guid: d3e3d5f4e8fe15b429c1a56df7ff34e7, type: 2}
-  child: {fileID: 11400000, guid: 78f1b3c8ee5ed6f4a86430b974d9293a, type: 2}
+  child: {fileID: 0}
   state: 1
   guid: 
   position: {x: 0, y: 0}

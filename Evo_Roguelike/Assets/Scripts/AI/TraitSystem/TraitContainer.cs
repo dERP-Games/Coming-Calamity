@@ -36,8 +36,8 @@ public class TraitContainer : MonoBehaviour
 
     public void OnMakeChoice()
     {
-        // OnMakeChoice function to add the values for this trait to the SpeciesStatManager.
-        // Still to do - don't know what object to interface with to do this
+        // Add values from trait to species stats manager
+        ServiceLocator.Instance.GetService<SpeciesStatsManager>().AddTrait(trait);
         
         // Also, close the panel in general.
         transform.parent.gameObject.SetActive(false);

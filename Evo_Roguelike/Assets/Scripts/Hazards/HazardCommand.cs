@@ -41,5 +41,8 @@ public abstract class HazardCommand
         PopulationEffect();
 
         dHazardExecuted?.Invoke();
+
+        // Get UI Manager and tell it to enable traits panel
+        ServiceLocator.Instance.GetService<UIManager>().EnableTraitsGUI();
     }
 }

@@ -231,6 +231,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bIsActive: 1
+  initialState: 1
 --- !u!114 &2510302219068348037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,3 +244,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6c4f614ac1e53c4c9e9f00f81aa360b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _health: 0
+  _hunger: 0
