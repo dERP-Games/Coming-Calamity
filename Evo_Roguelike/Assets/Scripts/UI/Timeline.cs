@@ -75,7 +75,7 @@ public class Timeline : MonoBehaviour
 
         // Constructing left edge
         int i = -(_timelineExtent + 1);
-        _lineImgs.Add(CreateAndAddImage(horLeftEdge, new Vector2(i * _distanceBetweenSteps, _timelineYOffset), "leftEdge"));
+        _lineImgs.Add(CreateAndAddImage(horLeftEdge, new Vector2(i * _distanceBetweenSteps, _timelineYOffset), "_size"));
         i++;
 
         // Constructing middle parts based on length
