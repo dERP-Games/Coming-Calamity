@@ -13,7 +13,7 @@ public class ServiceLocator : MonoBehaviour
 
     private Dictionary<Type, MonoBehaviour> servicesDict;
 
-    private void Awake()
+    public void Awake()
     {
         if (Instance != null && Instance != this)
         {

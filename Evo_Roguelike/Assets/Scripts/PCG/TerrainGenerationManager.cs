@@ -8,6 +8,9 @@ public class TerrainGenerationManager : MonoBehaviour
     public MaskSetup maskSetup;
     public int mapHeight = 720;
     public int mapWidth = 720;
+
+    public float heightTemperatureSlope;
+    public float humidityPhaseShift;
     private Generator _noiseGenerator;
 
     public float[,] MakeNoiseValues()
