@@ -18,6 +18,9 @@ public abstract class AbsBaseState<EState> where EState : System.Enum
         StateKey = key;
     }
 
+    // Public fields
+    public bool bActionSucceeded;
+
     // Public properties
     public AbsStateMachine<EState> OwnerFSM { get; set; }
     public EState StateKey { get; private set; }

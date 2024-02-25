@@ -47,6 +47,7 @@ public class ActionManager
     private void OnTick()
     {
         // Send actions to population here.
+        ServiceLocator.Instance.GetService<PopulationManager>().SetNextActions(queuedActions);
 
         queuedActions.Clear();
         dQueuedActionsUpdated?.Invoke();

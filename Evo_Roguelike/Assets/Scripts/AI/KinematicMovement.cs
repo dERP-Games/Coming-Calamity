@@ -64,6 +64,9 @@ public class KinematicMovement : MonoBehaviour
         // Set the first wander position
         if(_bIsWandering)
             SetWanderPosition();
+
+        // Move -1 in Z direction
+        gameObject.transform.position -= Vector3.forward;
     }
 
     // Update is called once per frame
@@ -99,7 +102,7 @@ public class KinematicMovement : MonoBehaviour
         Vector2 finalVelocity = _CurrentVelocity.normalized * maxSpeed;
 
         // Update position based on final velocity
-        transform.position += new Vector3(finalVelocity.x, finalVelocity.y, 0.0f) * Time.deltaTime;
+        transform.position += new Vector3(finalVelocity.x, finalVelocity.y, gameObject.transform.position.z) * Time.deltaTime;
     }
 
     /*

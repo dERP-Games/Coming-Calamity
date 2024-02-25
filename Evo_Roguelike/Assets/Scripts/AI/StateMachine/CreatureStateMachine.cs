@@ -11,6 +11,7 @@ public class CreatureStateMachine : AbsStateMachine<CreatureStateMachine.Creatur
     // Enum used for holding all creature state keys
     public enum CreatureStates
     {
+        Idle,
         Wandering,
         MovingTo,
         Feeding,
@@ -36,6 +37,7 @@ public class CreatureStateMachine : AbsStateMachine<CreatureStateMachine.Creatur
         Init();
 
         // Fill the dictionary with needed states
+        states[CreatureStates.Idle] = new IdleState();
         states[CreatureStates.Wandering] = new WanderingState();
         states[CreatureStates.MovingTo] = new MovingState();
         states[CreatureStates.Feeding] = new FeedingState();
