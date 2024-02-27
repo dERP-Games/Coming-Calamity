@@ -49,7 +49,9 @@ public class ActionManager
         // Send actions to population here.
         ServiceLocator.Instance.GetService<PopulationManager>().SetNextActions(queuedActions);
 
-        queuedActions.Clear();
+        //queuedActions.Clear();
+        queuedActions = new List<PlayerAction>();
+
         dQueuedActionsUpdated?.Invoke();
     }
 
