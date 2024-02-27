@@ -152,7 +152,7 @@ MonoBehaviour:
   creatureMask:
     serializedVersion: 2
     m_Bits: 64
-  maxSpeed: 5
+  maxSpeed: 3
   maxForce: 0.03
   flockSize: 2
   separationStrength: 3

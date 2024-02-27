@@ -32,6 +32,7 @@ public class KinematicMovement : MonoBehaviour
     private bool _bIsWandering;
     private Vector2 _CurrentVelocity;
     private SpriteRenderer _SpriteRenderer;
+    private Rigidbody2D _Rb;
 
     // Public properties
     public bool CanMove
@@ -60,6 +61,7 @@ public class KinematicMovement : MonoBehaviour
     {
         // Init components
         _SpriteRenderer = GetComponent<SpriteRenderer>();
+        _Rb = GetComponent<Rigidbody2D>();
 
         // Set the first wander position
         if(_bIsWandering)
@@ -85,10 +87,11 @@ public class KinematicMovement : MonoBehaviour
 
             // Agents stay separated from each other
             // and steer away when close
-            ApplySeparation();
             UpdateVelocity();
             UpdatePosition();
         }
+        else
+            _Rb.velocity = Vector3.zero;
     }
 
     /*
@@ -100,9 +103,7 @@ public class KinematicMovement : MonoBehaviour
     {
         // Calculate moving velocity
         Vector2 finalVelocity = _CurrentVelocity.normalized * maxSpeed;
-
-        // Update position based on final velocity
-        transform.position += new Vector3(finalVelocity.x, finalVelocity.y, gameObject.transform.position.z) * Time.deltaTime;
+        _Rb.velocity = finalVelocity;
     }
 
     /*

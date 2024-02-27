@@ -147,12 +147,19 @@ public class PopulationManager : MonoBehaviour
         }
     }
 
-    // Method used for setting creature actions to take
+    /// <summary>
+    /// Used for setting creature actions to take
+    /// </summary>
+    /// <param name="actions">Actions being sent from the action manager</param>
     public void SetNextActions(List<PlayerAction> actions)
     {
         actionsQueue = actions;
     }
 
+    /// <summary>
+    /// Gets the current queued action
+    /// </summary>
+    /// <returns>The action at the front of the queue</returns>
     public PlayerAction GetCurrentAction()
     {
         // Return null action if list is empty or null
@@ -164,13 +171,13 @@ public class PopulationManager : MonoBehaviour
         // Return the first element of the list
         return actionsQueue[0];
     }
-
-    // Method used for popping action queue
+    /// <summary>
+    /// Used for popping action queue
+    /// </summary>
     public void PopActionQueue()
     {
         if (actionsQueue.Count == 0)
             return;
-
         actionsQueue.RemoveAt(0);
     }
 }
