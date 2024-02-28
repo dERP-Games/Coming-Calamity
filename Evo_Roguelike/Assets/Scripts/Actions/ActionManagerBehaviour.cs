@@ -23,7 +23,8 @@ public class ActionManagerBehaviour : MonoBehaviour
             if (_actionManager == null)
             {
                 TimeManager timeManager = ServiceLocator.Instance.GetService<TimeManagerBehavior>().TimeManager;
-                _actionManager = new ActionManager(playerActions, timeManager);
+                PopulationManager populationManager = ServiceLocator.Instance.GetService<PopulationManager>();
+                _actionManager = new ActionManager(playerActions, timeManager, populationManager);
             }
 
             return _actionManager;

@@ -18,7 +18,7 @@ public class ActionSystemETests
         ActionData attackActionData = (ActionData)AssetDatabase.LoadAssetAtPath("Assets/ScriptableObjects/Actions/AttackAction.asset", typeof(ActionData));
 
         List<ActionData> actionDatas = new List<ActionData>() {moveActionData, feedActionData, attackActionData };
-        _actionManager = new ActionManager(actionDatas, _timeManager);
+        _actionManager = new ActionManager(actionDatas, _timeManager, null);
 
     }
 
