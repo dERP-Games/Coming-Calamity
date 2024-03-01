@@ -20,6 +20,8 @@ public class FloodEvent : EnvEventCommand
     /// </summary>
     public override void EnvironmentEffect()
     {
+        if (_gridManager == null) return;
+
         Debug.Log("Flood environmental effect");
         Vector3Int gridSize = _gridManager.GetGridSize();
 
