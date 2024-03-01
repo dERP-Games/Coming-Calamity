@@ -41,7 +41,8 @@ public class GridSystemPTests
          */
         GridManager gridManager = CreateGridManagerInstance();
         GroundTile.GroundTileType[,] tileTypes = { { GroundTile.GroundTileType.Beach, GroundTile.GroundTileType.Water }, { GroundTile.GroundTileType.Forest, GroundTile.GroundTileType.Snow } };
-        gridManager.GenerateGroundTiles(tileTypes);
+        float[,] noiseValues = { { 0.1f,0.2f}, {0.3f, 0.4f } };
+        gridManager.GenerateGroundTiles(tileTypes, noiseValues);
 
         GroundTile.GroundTileType expected1 = GroundTile.GroundTileType.Beach;
         GroundTile.GroundTileType expected2 = GroundTile.GroundTileType.Water;
@@ -64,7 +65,8 @@ public class GridSystemPTests
          */
         GridManager gridManager = CreateGridManagerInstance();
         GroundTile.GroundTileType[,] tileTypes = { { GroundTile.GroundTileType.Beach, GroundTile.GroundTileType.Water }, { GroundTile.GroundTileType.Forest, GroundTile.GroundTileType.Snow } };
-        gridManager.GenerateGroundTiles(tileTypes);
+        float[,] noiseValues = { { 0.1f, 0.2f }, { 0.3f, 0.4f } };
+        gridManager.GenerateGroundTiles(tileTypes, noiseValues);
 
         GroundData groundData = gridManager.GetGroundDataFromWorldPos(new Vector3(-0.5f, -0.5f, 0f));
         groundData.worldPosition = new Vector3(-5, -5, 0);

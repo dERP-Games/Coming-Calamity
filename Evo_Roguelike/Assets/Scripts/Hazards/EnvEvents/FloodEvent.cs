@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class FloodEvent : EnvEventCommand
 {
+    [SerializeField]
+    private int maxSeverity = 10;
     public FloodEvent(int timestampToStop, int timestampToStart, GridManager gridManager, PopulationManager populationManager) : base(timestampToStop, timestampToStart, gridManager, populationManager)
     {
 
@@ -15,6 +17,47 @@ public class FloodEvent : EnvEventCommand
 
     }
 
+    private void Fill(Vector3Int point, int severity)
+    {
+        float startingHeight = _gridManager.GetGroundDataFromCellPos(point).height;
+        _gridManager.ChangeGroundTile(point, GroundTile.GroundTileType.Water);
+        int floodedNeighbors = 0;
+        int counter = 1;
+        while(floodedNeighbors < severity && counter < severity)
+        {
+            Vector3Int newPosition = new Vector3Int(point.x + counter, point.y + counter, point.z);
+            float newPositionHeight = _gridManager.GetGroundDataFromCellPos(newPosition).height;
+            if (newPositionHeight <= startingHeight && _gridManager.GetTileTypeFromCellPos(newPosition) != GroundTile.GroundTileType.Water)
+            {
+                _gridManager.ChangeGroundTile(newPosition, GroundTile.GroundTileType.Water);
+                floodedNeighbors++;
+            }
+
+            newPosition = new Vector3Int(point.x - counter, point.y + counter, point.z);
+            if (newPositionHeight <= startingHeight && _gridManager.GetTileTypeFromCellPos(newPosition) != GroundTile.GroundTileType.Water)
+            {
+                _gridManager.ChangeGroundTile(newPosition, GroundTile.GroundTileType.Water);
+                floodedNeighbors++;
+            }
+
+            newPosition = new Vector3Int(point.x + counter, point.y - counter, point.z);
+            if (newPositionHeight <= startingHeight && _gridManager.GetTileTypeFromCellPos(newPosition) != GroundTile.GroundTileType.Water)
+            {
+                _gridManager.ChangeGroundTile(newPosition, GroundTile.GroundTileType.Water);
+                floodedNeighbors++;
+            }
+
+            newPosition = new Vector3Int(point.x - counter, point.y - counter, point.z);
+            if (newPositionHeight <= startingHeight && _gridManager.GetTileTypeFromCellPos(newPosition) != GroundTile.GroundTileType.Water)
+            {
+                _gridManager.ChangeGroundTile(newPosition, GroundTile.GroundTileType.Water);
+                floodedNeighbors++;
+            }
+            counter++;
+        }
+        
+    }
+
     /// <summary>
     /// Effect of event on environment.
     /// </summary>
@@ -23,6 +66,7 @@ public class FloodEvent : EnvEventCommand
         if (_gridManager == null) return;
 
         Debug.Log("Flood environmental effect");
+        int floatMaxGirth = Random.Range(0, maxSeverity);
         Vector3Int gridSize = _gridManager.GetGridSize();
 
         int randomX1 = Random.Range(-gridSize.x/2, gridSize.x/2);
@@ -35,11 +79,13 @@ public class FloodEvent : EnvEventCommand
 
         Vector3Int endPoint = new Vector3Int(randomX2, randomY2, 0);
         Vector3Int curPoint = startPoint;
+        
 
         while(curPoint != endPoint)
         {
             Debug.Log(curPoint);
-            _gridManager.ChangeGroundTile(curPoint, GroundTile.GroundTileType.Water);
+            Fill(curPoint, floatMaxGirth);
+            
 
             Vector3 floodDir = (endPoint - curPoint);
             floodDir.Normalize();

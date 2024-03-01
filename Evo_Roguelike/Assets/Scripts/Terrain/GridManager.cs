@@ -77,10 +77,10 @@ public class GridManager
          * Calls for PCG terrain generation, translates into tile types, and sends data to be contstructed into tilemap.
          */
         float[,] noiseValues = _terrainGenerationManager.MakeNoiseValues();
-        GenerateGroundTiles(_noiseQuantizer.GroundTilesFromNoise(noiseValues));
+        GenerateGroundTiles(_noiseQuantizer.GroundTilesFromNoise(noiseValues), noiseValues);
     }
 
-    public void GenerateGroundTiles(GroundTile.GroundTileType[,] groundTiles)
+    public void GenerateGroundTiles(GroundTile.GroundTileType[,] groundTiles, float[,] noiseValues)
     {
         /*
          * Generates tiles in tilemap based on data passed in. Called in-editor.
@@ -113,7 +113,7 @@ public class GridManager
 
                 _groundTilemap.SetTile(tilePos, _groundTilesDict[tileType]);
                 // Mapping tile position to its instance data.
-                _groundDataDict[tilePos] = new GroundData(_groundTilemap.CellToWorld(tilePos), tileType);
+                _groundDataDict[tilePos] = new GroundData(_groundTilemap.CellToWorld(tilePos), tileType, noiseValues[i, j]);
             }
         }
 
@@ -192,7 +192,8 @@ public class GridManager
     {
         GroundTile newGroundTile = _groundTilesDict[newTileType];
         _groundTilemap.SetTile(cellPos, newGroundTile);
-        _groundDataDict[cellPos] = new GroundData(_groundTilemap.CellToWorld(cellPos), newTileType);
+        GroundData oldGroundData = _groundDataDict[cellPos];
+        _groundDataDict[cellPos] = new GroundData(_groundTilemap.CellToWorld(cellPos), newTileType, oldGroundData.height);
     }
 
     public Vector3Int GetGridSize()
