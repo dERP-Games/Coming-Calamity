@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class FloodEvent : EnvEventCommand
@@ -22,24 +23,37 @@ public class FloodEvent : EnvEventCommand
         int randomX1 = Random.Range(-gridSize.x/2, gridSize.x/2);
         int randomY1 = Random.Range(-gridSize.y/2, gridSize.y/2);
 
+        Vector3Int startPoint = new Vector3Int(randomX1, randomY1, 0);
+
         int randomX2 = Random.Range(-gridSize.x / 2, gridSize.x / 2);
         int randomY2 = Random.Range(-gridSize.y / 2, gridSize.y / 2);
 
-        int smallerX = randomX1 < randomX2 ? randomX1 : randomX2;
-        int largerX = randomX1 < randomX2 ? randomX2 : randomX1;
+        Vector3Int endPoint = new Vector3Int(randomX2, randomY2, 0);
+        Vector3Int curPoint = startPoint;
 
-        int smallerY = randomY1 < randomY2 ? randomY1 : randomY2;
-        int largerY = randomY1 < randomY2 ? randomY2 : randomY1;
-
-        for(int i = smallerX; i <= largerX; i++)
+        Debug.Log("Start POint " + startPoint);
+        Debug.Log("End POint " + endPoint);
+        while(curPoint != endPoint)
         {
-            _gridManager.ChangeGroundTile(new Vector3Int(i, smallerY), GroundTile.GroundTileType.Water);
+            Debug.Log(curPoint);
+            _gridManager.ChangeGroundTile(curPoint, GroundTile.GroundTileType.Water);
+
+            Vector3 floodDir = (endPoint - curPoint);
+            floodDir.Normalize();
+
+
+            if(Mathf.Abs(floodDir.x) > Mathf.Abs(floodDir.y))
+            {
+                curPoint = curPoint + new Vector3Int((int) Mathf.Sign(floodDir.x), 0, 0);
+            }
+            else
+            {
+                curPoint = curPoint + new Vector3Int(0, (int)Mathf.Sign(floodDir.y), 0);
+            }
         }
 
-        for (int j = smallerY; j <= largerY; j++)
-        {
-            _gridManager.ChangeGroundTile(new Vector3Int(largerX, j), GroundTile.GroundTileType.Water);
-        }
+        _gridManager.ChangeGroundTile(curPoint, GroundTile.GroundTileType.Water);
+
     }
 
     public override void PopulationEffect()
