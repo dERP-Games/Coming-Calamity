@@ -15,6 +15,9 @@ public class FloodEvent : EnvEventCommand
 
     }
 
+    /// <summary>
+    /// Effect of event on environment.
+    /// </summary>
     public override void EnvironmentEffect()
     {
         Debug.Log("Flood environmental effect");
@@ -31,8 +34,6 @@ public class FloodEvent : EnvEventCommand
         Vector3Int endPoint = new Vector3Int(randomX2, randomY2, 0);
         Vector3Int curPoint = startPoint;
 
-        Debug.Log("Start POint " + startPoint);
-        Debug.Log("End POint " + endPoint);
         while(curPoint != endPoint)
         {
             Debug.Log(curPoint);
