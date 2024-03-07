@@ -14,6 +14,7 @@ public class PopulationManager : MonoBehaviour
 
     // Private fields
     Creature[] _Creatures;
+    List<PlayerAction> actionsQueue;
 
     // Public field for getting species stat manager
     public SpeciesStatsManager StatsManager
@@ -33,6 +34,9 @@ public class PopulationManager : MonoBehaviour
 
         // Initialize population vital stats
         InitializePopulationVitals();
+
+        // Init action queue
+        actionsQueue = new List<PlayerAction>();
     }
 
     /// <summary>
@@ -87,18 +91,17 @@ public class PopulationManager : MonoBehaviour
 
         // Get the spawn point randomly and teleport the creature to that point
         Vector3 spawnPoint = GetRandomPointOnScreen();
-        creature.transform.position = spawnPoint;
+        creature.transform.position = new Vector3(spawnPoint.x, spawnPoint.y, -1.0f);
 
         // Update on-screen status
         creature.bIsActive = true;
-        creature.StateMachine.TransitionToState(CreatureStateMachine.CreatureStates.Wandering);
     }
 
     /// <summary>
     /// Finds a random location on the orthographic screen
     /// </summary>
     /// <returns>Vector2, Randomly calculated location</returns>
-    Vector2 GetRandomPointOnScreen()
+    Vector3 GetRandomPointOnScreen()
     {
         // Get max height and width values from screen
         float maxHeight = Camera.main.GetComponent<Camera>().orthographicSize;
@@ -108,7 +111,7 @@ public class PopulationManager : MonoBehaviour
         float newPosX = Random.Range((-maxWidth * 2), (maxWidth * 2));
         float newPosY = Random.Range(-maxHeight, maxHeight);
 
-        return new Vector2(newPosX, newPosY);
+        return new Vector3(newPosX, newPosY, gameObject.transform.position.z);
     }
 
 
@@ -142,5 +145,39 @@ public class PopulationManager : MonoBehaviour
 
             }
         }
+    }
+
+    /// <summary>
+    /// Used for setting creature actions to take
+    /// </summary>
+    /// <param name="actions">Actions being sent from the action manager</param>
+    public void SetNextActions(List<PlayerAction> actions)
+    {
+        actionsQueue = actions;
+    }
+
+    /// <summary>
+    /// Gets the current queued action
+    /// </summary>
+    /// <returns>The action at the front of the queue</returns>
+    public PlayerAction GetCurrentAction()
+    {
+        // Return null action if list is empty or null
+        if(actionsQueue == null)
+            return ActionFactory.CreatePlayerAction(ActionManager.EPlayerAction.Null);
+        if (actionsQueue.Count == 0)
+            return ActionFactory.CreatePlayerAction(ActionManager.EPlayerAction.Null);
+
+        // Return the first element of the list
+        return actionsQueue[0];
+    }
+    /// <summary>
+    /// Used for popping action queue
+    /// </summary>
+    public void PopActionQueue()
+    {
+        if (actionsQueue.Count == 0)
+            return;
+        actionsQueue.RemoveAt(0);
     }
 }

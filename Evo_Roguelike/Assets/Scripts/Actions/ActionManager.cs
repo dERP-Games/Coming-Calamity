@@ -28,12 +28,14 @@ public class ActionManager
 
 
     private TimeManager _timeManager;
+    private PopulationManager _populationManager;
     private int maxNumberOfQueuedActions = 3; // hard coded limit on actions for now
 
-    public ActionManager(List<ActionData> actions, TimeManager timeManager)
+    public ActionManager(List<ActionData> actions, TimeManager timeManager, PopulationManager populationManager)
     {
         availableActions = actions;
         _timeManager = timeManager;
+        _populationManager = populationManager;
     }
 
     public void OnStart()
@@ -47,8 +49,12 @@ public class ActionManager
     private void OnTick()
     {
         // Send actions to population here.
+        if(_populationManager != null)
+            _populationManager.SetNextActions(queuedActions);
 
-        queuedActions.Clear();
+        //queuedActions.Clear();
+        queuedActions = new List<PlayerAction>();
+
         dQueuedActionsUpdated?.Invoke();
     }
 
